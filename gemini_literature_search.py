@@ -426,6 +426,86 @@ def find_related_papers(paper_title: str, authors: str, max_results: int = 5) ->
         return {"error": str(e)}
 
 @app.tool()
+def find_relevant_literature(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
+    """
+    Find relevant literature for each sentence in a given paragraph without bias toward supporting or contradicting.
+    
+    Args:
+        paragraph: The paragraph text to analyze sentence by sentence
+        model: Gemini model to use (default: "gemini-2.0-flash-exp")
+    
+    Returns:
+        On success: {"sentence_analysis": <list of sentences with relevant literature>}
+        On error: {"error": <error message>}
+    
+    Examples:
+        >>> find_relevant_literature("Machine learning is used in healthcare. Neural networks process medical images.")
+        {'sentence_analysis': [{'sentence': 'Machine learning is used...', 'relevant_literature': [...]}]}
+    """
+    try:
+        search_query = f"""
+        For the following paragraph, analyze each sentence and find academic literature that is RELEVANT to each topic or concept mentioned:
+
+        Paragraph: "{paragraph}"
+
+        For each sentence:
+        1. Break down the paragraph into individual sentences
+        2. Identify the main topics, concepts, or research areas mentioned
+        3. Search for academic papers that are relevant to these topics
+        4. Include foundational papers, recent research, review articles, and key studies
+        5. Focus on relevance rather than supporting or contradicting the claims
+        6. Include diverse perspectives and comprehensive coverage of the topic
+
+        Return your response as JSON with format:
+        {{
+            "sentence_analysis": [
+                {{
+                    "sentence_number": 1,
+                    "sentence_text": "<sentence>",
+                    "key_topics": ["<topic1>", "<topic2>", "<topic3>"],
+                    "relevant_literature": [
+                        {{
+                            "title": "<paper title>",
+                            "authors": ["<author1>", "<author2>"],
+                            "year": <year>,
+                            "relevance_type": "<foundational/recent_research/review/methodology/application>",
+                            "topic_coverage": "<which topics from the sentence this paper covers>",
+                            "key_contribution": "<what this paper contributes to understanding the topic>",
+                            "relevance_score": <0.0-1.0>,
+                            "doi_or_url": "<DOI or URL if available>"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+        """
+        
+        response = search_with_grounding(search_query, model)
+        
+        # Try to extract JSON from response
+        try:
+            import re
+            json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+            if json_match:
+                result_data = json.loads(json_match.group())
+                return result_data
+            else:
+                return {
+                    "sentence_analysis": [],
+                    "raw_response": response.text,
+                    "note": "Could not parse JSON response, see raw_response"
+                }
+        except json.JSONDecodeError:
+            return {
+                "sentence_analysis": [],
+                "raw_response": response.text,
+                "note": "Could not parse JSON response, see raw_response"
+            }
+            
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.tool()
 def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
     """
     Find supporting literature for each sentence in a given paragraph.
