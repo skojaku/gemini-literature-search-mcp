@@ -489,27 +489,43 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
         
         response = search_with_grounding(search_query, model)
         
+        # Debug: Always return the raw response first
+        result = {
+            "raw_response": response.text if hasattr(response, 'text') else str(response),
+            "sentence_analysis": [],
+            "debug_info": {
+                "model_used": model,
+                "query_length": len(search_query),
+                "response_type": type(response).__name__
+            }
+        }
+        
         # Try to extract JSON from response
         try:
-            # Look for JSON in the response
-            import re
-            json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
-            if json_match:
-                result_data = json.loads(json_match.group())
-                return result_data
+            if hasattr(response, 'text') and response.text:
+                # Look for JSON in the response
+                import re
+                json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+                if json_match:
+                    try:
+                        result_data = json.loads(json_match.group())
+                        if isinstance(result_data, dict) and "sentence_analysis" in result_data:
+                            return result_data
+                        else:
+                            result["note"] = "JSON found but no sentence_analysis field"
+                            result["parsed_json"] = result_data
+                    except json.JSONDecodeError as je:
+                        result["note"] = f"JSON parse error: {str(je)}"
+                        result["json_text"] = json_match.group()[:500]  # First 500 chars
+                else:
+                    result["note"] = "No JSON pattern found in response"
             else:
-                # If no JSON found, return structured response
-                return {
-                    "sentence_analysis": [],
-                    "raw_response": response.text,
-                    "note": "Could not parse JSON response, see raw_response"
-                }
-        except json.JSONDecodeError:
-            return {
-                "sentence_analysis": [],
-                "raw_response": response.text,
-                "note": "Could not parse JSON response, see raw_response"
-            }
+                result["note"] = "No text attribute in response or empty response"
+                
+        except Exception as parse_error:
+            result["note"] = f"Error during parsing: {str(parse_error)}"
+            
+        return result
             
     except Exception as e:
         return {"error": str(e)}
