@@ -11,13 +11,10 @@ except ImportError as e:
 
 try:
     import google.generativeai as genai
-    GEMINI_AVAILABLE = True
 except ImportError as e:
-    print(f"Warning: google.generativeai not available: {e}", file=sys.stderr)
-    print("Install with: pip install google-generativeai", file=sys.stderr)
-    print("Running in basic mode without AI features...", file=sys.stderr)
-    genai = None
-    GEMINI_AVAILABLE = False
+    print(f"Error importing google.generativeai: {e}", file=sys.stderr)
+    print("Make sure to install: pip install google-generativeai", file=sys.stderr)
+    sys.exit(1)
 
 try:
     from fastmcp import FastMCP
@@ -31,14 +28,11 @@ load_dotenv()
 
 # Configure Gemini API
 api_key = os.getenv('GEMINI_API_KEY')
-if GEMINI_AVAILABLE:
-    if not api_key:
-        print("Warning: GEMINI_API_KEY not found in environment variables.", file=sys.stderr)
-        print("Please set your Gemini API key in a .env file or environment variable.", file=sys.stderr)
-        print("AI features will be disabled.", file=sys.stderr)
-        GEMINI_AVAILABLE = False
-    else:
-        genai.configure(api_key=api_key)
+if not api_key:
+    print("Warning: GEMINI_API_KEY not found in environment variables.", file=sys.stderr)
+    print("Please set your Gemini API key in a .env file or environment variable.", file=sys.stderr)
+else:
+    genai.configure(api_key=api_key)
 
 # Create MCP Server
 app = FastMCP(
@@ -79,8 +73,6 @@ class LiteratureEntry:
 
 def get_gemini_model():
     """Get Gemini model instance"""
-    if not GEMINI_AVAILABLE:
-        return None
     return genai.GenerativeModel('gemini-1.5-flash')
 
 @app.tool()
@@ -146,34 +138,7 @@ def search_literature(query: str, max_results: int = 10) -> dict:
         if not literature_database:
             return {"results": [], "message": "No literature entries in database"}
         
-        if not GEMINI_AVAILABLE:
-            # Fallback to simple text search when Gemini is not available
-            query_lower = query.lower()
-            results = []
-            
-            for entry in literature_database:
-                # Simple relevance scoring based on keyword and title matches
-                score = 0
-                text_to_search = f"{entry.title} {entry.abstract} {' '.join(entry.keywords)}".lower()
-                
-                # Count query word matches
-                query_words = query_lower.split()
-                matches = sum(1 for word in query_words if word in text_to_search)
-                score = matches / len(query_words) if query_words else 0
-                
-                if score > 0:
-                    entry_dict = entry.to_dict()
-                    entry_dict["relevance_score"] = score
-                    entry_dict["relevance_reason"] = f"Basic text search: {matches}/{len(query_words)} query words found"
-                    results.append(entry_dict)
-            
-            # Sort by relevance score and limit results
-            results.sort(key=lambda x: x["relevance_score"], reverse=True)
-            return {"results": results[:max_results]}
-        
         model = get_gemini_model()
-        if not model:
-            return {"error": "Gemini model not available"}
         
         # Create a prompt for semantic search
         literature_summaries = []
@@ -241,24 +206,7 @@ def validate_literature_relevance(literature_id: int, research_topic: str) -> di
             return {"error": "Literature entry not found"}
         
         entry = literature_database[literature_id - 1]
-        
-        if not GEMINI_AVAILABLE:
-            # Fallback: simple keyword matching
-            topic_words = research_topic.lower().split()
-            entry_text = f"{entry.title} {entry.abstract} {' '.join(entry.keywords)}".lower()
-            matches = sum(1 for word in topic_words if word in entry_text)
-            score = matches / len(topic_words) if topic_words else 0
-            
-            return {
-                "relevance_score": score,
-                "analysis": f"Basic keyword analysis: {matches}/{len(topic_words)} topic words found in literature",
-                "relevant_aspects": [f"Matched words: {matches}"],
-                "concerns": ["AI analysis not available - using basic keyword matching"]
-            }
-        
         model = get_gemini_model()
-        if not model:
-            return {"error": "Gemini model not available"}
         
         prompt = f"""
         Research Topic: "{research_topic}"
@@ -324,20 +272,7 @@ def validate_citation_relevance(sentence: str, literature_id: int, context: Opti
             return {"error": "Literature entry not found"}
         
         entry = literature_database[literature_id - 1]
-        
-        if not GEMINI_AVAILABLE:
-            # Fallback: basic appropriateness check
-            return {
-                "is_appropriate": True,
-                "confidence": 0.5,
-                "analysis": "AI validation not available - basic check suggests citation format is acceptable",
-                "issues": ["AI analysis not available"],
-                "suggestions": ["Install google-generativeai for detailed citation validation"]
-            }
-        
         model = get_gemini_model()
-        if not model:
-            return {"error": "Gemini model not available"}
         
         context_info = f"\n\nContext: {context}" if context else ""
         
@@ -414,32 +349,7 @@ def generate_literature_summary(literature_ids: List[int], topic: str) -> dict:
         if not entries:
             return {"error": "No valid literature entries found"}
         
-        if not GEMINI_AVAILABLE:
-            # Fallback: basic summary without AI
-            summary = f"Summary of {len(entries)} literature entries on topic: {topic}\n\n"
-            key_findings = []
-            common_themes = []
-            
-            for i, entry in enumerate(entries, 1):
-                summary += f"{i}. {entry.title} ({', '.join(entry.authors)}, {entry.year})\n"
-                summary += f"   Abstract: {entry.abstract[:200]}...\n\n"
-                key_findings.append(f"Paper {i}: {entry.title}")
-                common_themes.extend(entry.keywords)
-            
-            # Get unique themes
-            common_themes = list(set(common_themes))
-            
-            return {
-                "summary": summary,
-                "key_findings": key_findings,
-                "common_themes": common_themes[:5],  # Top 5 themes
-                "research_gaps": ["AI analysis not available"],
-                "future_directions": ["Install google-generativeai for detailed analysis"]
-            }
-        
         model = get_gemini_model()
-        if not model:
-            return {"error": "Gemini model not available"}
         
         literature_text = ""
         for entry in entries:
