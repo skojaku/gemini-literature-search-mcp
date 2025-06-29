@@ -22,6 +22,7 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
   - Direct delegation of any task to Gemini
   - Optional Google Search grounding for real-time information
   - Flexible tool for any research or analysis needs
+  - Configurable model selection for different capabilities
 
 ## Installation
 
@@ -177,6 +178,25 @@ Ask Gemini: "What are the latest breakthroughs in CRISPR gene editing technology
 
 ```
 Ask Gemini without web search: "Explain the concept of machine learning overfitting in simple terms"
+```
+
+```
+Ask Gemini with specific model: "Analyze recent AI trends" using model "gemini-1.5-pro"
+```
+
+### Available Models
+
+The server supports various Gemini models. You can specify the model parameter in `search_literature` and `ask_gemini` tools:
+
+- **`gemini-2.0-flash-exp`** (default) - Latest experimental model with grounding
+- **`gemini-1.5-pro`** - High-capability model for complex tasks
+- **`gemini-1.5-flash`** - Fast model for quick responses
+- **`gemini-1.0-pro`** - Stable production model
+
+Example usage:
+```
+search_literature("AI in medicine", model="gemini-1.5-pro")
+ask_gemini("Explain quantum physics", model="gemini-1.5-flash", use_search=False)
 ```
 
 ## Development

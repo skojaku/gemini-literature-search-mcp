@@ -54,11 +54,11 @@ app = FastMCP(
 
 TRANSPORT = "sse"
 
-def get_gemini_model():
+def get_gemini_model(model_name="gemini-1.5-flash"):
     """Get Gemini model instance"""
-    return genai.GenerativeModel('gemini-1.5-flash')
+    return genai.GenerativeModel(model_name)
 
-def search_with_grounding(query):
+def search_with_grounding(query, model_name="gemini-2.0-flash-exp"):
     """Search using Gemini with Google Search grounding"""
     if not client:
         raise Exception("Grounding client not available. Check API key configuration.")
@@ -75,7 +75,7 @@ def search_with_grounding(query):
     
     # Make the request
     response = client.models.generate_content(
-        model="gemini-2.0-flash-exp",
+        model=model_name,
         contents=query,
         config=config,
     )
@@ -83,13 +83,14 @@ def search_with_grounding(query):
     return response
 
 @app.tool()
-def search_literature(query: str, max_results: int = 10) -> dict:
+def search_literature(query: str, max_results: int = 10, model: str = "gemini-2.0-flash-exp") -> dict:
     """
     Search the internet for academic literature on a topic using Gemini.
     
     Args:
         query: Search query describing the research topic or keywords
         max_results: Maximum number of results to return (default: 10)
+        model: Gemini model to use (default: "gemini-2.0-flash-exp")
     
     Returns:
         On success: {"results": <list of papers found online>}
@@ -97,6 +98,8 @@ def search_literature(query: str, max_results: int = 10) -> dict:
     
     Examples:
         >>> search_literature("machine learning applications in healthcare")
+        {'results': [{'title': '...', 'authors': [...], 'year': 2024, 'summary': '...'}]}
+        >>> search_literature("AI in healthcare", model="gemini-1.5-pro")
         {'results': [{'title': '...', 'authors': [...], 'year': 2024, 'summary': '...'}]}
     """
     try:
@@ -115,7 +118,7 @@ def search_literature(query: str, max_results: int = 10) -> dict:
         Organize the results clearly with proper citations and sources.
         """
         
-        response = search_with_grounding(search_query)
+        response = search_with_grounding(search_query, model)
         
         # Extract information from grounded response
         result = {
@@ -423,13 +426,14 @@ def find_related_papers(paper_title: str, authors: str, max_results: int = 5) ->
         return {"error": str(e)}
 
 @app.tool()
-def ask_gemini(query: str, use_search: bool = True) -> dict:
+def ask_gemini(query: str, use_search: bool = True, model: str = "gemini-2.0-flash-exp") -> dict:
     """
     Delegate any task directly to Gemini with optional Google Search grounding.
     
     Args:
         query: Any question or task you want Gemini to handle
         use_search: Whether to use Google Search grounding (default: True)
+        model: Gemini model to use (default: "gemini-2.0-flash-exp")
     
     Returns:
         On success: {"response": <Gemini's response>, "sources": <list of sources if grounded>}
@@ -440,11 +444,13 @@ def ask_gemini(query: str, use_search: bool = True) -> dict:
         {'response': 'Recent developments in quantum computing include...', 'sources': [...]}
         >>> ask_gemini("Explain machine learning in simple terms", use_search=False)
         {'response': 'Machine learning is...', 'sources': []}
+        >>> ask_gemini("Analyze this research trend", model="gemini-1.5-pro")
+        {'response': 'Based on current research...', 'sources': [...]}
     """
     try:
         if use_search:
             # Use grounded search for real-time information
-            response = search_with_grounding(query)
+            response = search_with_grounding(query, model)
             
             # Extract information from grounded response
             result = {
@@ -475,8 +481,8 @@ def ask_gemini(query: str, use_search: bool = True) -> dict:
             return result
         else:
             # Use regular Gemini without grounding
-            model = get_gemini_model()
-            response = model.generate_content(query)
+            gemini_model = get_gemini_model(model)
+            response = gemini_model.generate_content(query)
             
             return {
                 "response": response.text,
