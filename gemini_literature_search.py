@@ -422,5 +422,70 @@ def find_related_papers(paper_title: str, authors: str, max_results: int = 5) ->
     except Exception as e:
         return {"error": str(e)}
 
+@app.tool()
+def ask_gemini(query: str, use_search: bool = True) -> dict:
+    """
+    Delegate any task directly to Gemini with optional Google Search grounding.
+    
+    Args:
+        query: Any question or task you want Gemini to handle
+        use_search: Whether to use Google Search grounding (default: True)
+    
+    Returns:
+        On success: {"response": <Gemini's response>, "sources": <list of sources if grounded>}
+        On error: {"error": <error message>}
+    
+    Examples:
+        >>> ask_gemini("What are the latest developments in quantum computing?")
+        {'response': 'Recent developments in quantum computing include...', 'sources': [...]}
+        >>> ask_gemini("Explain machine learning in simple terms", use_search=False)
+        {'response': 'Machine learning is...', 'sources': []}
+    """
+    try:
+        if use_search:
+            # Use grounded search for real-time information
+            response = search_with_grounding(query)
+            
+            # Extract information from grounded response
+            result = {
+                "response": response.text,
+                "sources": [],
+                "grounded": True
+            }
+            
+            # Add grounding metadata if available
+            if hasattr(response, 'candidates') and response.candidates:
+                candidate = response.candidates[0]
+                if hasattr(candidate, 'grounding_metadata') and candidate.grounding_metadata:
+                    grounding = candidate.grounding_metadata
+                    
+                    # Add search queries used
+                    if hasattr(grounding, 'web_search_queries'):
+                        result["web_search_queries"] = grounding.web_search_queries
+                    
+                    # Add source chunks
+                    if hasattr(grounding, 'grounding_chunks'):
+                        for chunk in grounding.grounding_chunks:
+                            if hasattr(chunk, 'web'):
+                                result["sources"].append({
+                                    "title": chunk.web.title if hasattr(chunk.web, 'title') else "Unknown",
+                                    "url": chunk.web.uri if hasattr(chunk.web, 'uri') else "Unknown"
+                                })
+            
+            return result
+        else:
+            # Use regular Gemini without grounding
+            model = get_gemini_model()
+            response = model.generate_content(query)
+            
+            return {
+                "response": response.text,
+                "sources": [],
+                "grounded": False
+            }
+            
+    except Exception as e:
+        return {"error": str(e)}
+
 if __name__ == "__main__":
     app.run(transport=TRANSPORT)

@@ -18,6 +18,10 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
   - Semantic search using Google Gemini AI
   - Contextual analysis of research papers
   - Citation validation and recommendations
+- **General AI Assistant**:
+  - Direct delegation of any task to Gemini
+  - Optional Google Search grounding for real-time information
+  - Flexible tool for any research or analysis needs
 
 ## Installation
 
@@ -164,6 +168,15 @@ Is this citation appropriate: "Deep learning has revolutionized medical diagnosi
 #### Generating Literature Summary
 ```
 Generate a comprehensive summary of literature entries #1, #2, and #3 focused on "AI applications in healthcare"
+```
+
+#### General Gemini Assistant
+```
+Ask Gemini: "What are the latest breakthroughs in CRISPR gene editing technology?"
+```
+
+```
+Ask Gemini without web search: "Explain the concept of machine learning overfitting in simple terms"
 ```
 
 ## Development

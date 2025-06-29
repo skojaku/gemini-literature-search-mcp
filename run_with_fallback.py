@@ -14,24 +14,47 @@ def check_uv_available():
     """Check if uv is available in PATH."""
     return shutil.which("uv") is not None
 
-def check_dependencies():
-    """Check if required dependencies are available."""
+def install_dependencies():
+    """Install dependencies using pip if they're missing."""
     required_packages = [
-        "fastmcp",
-        "google.generativeai", 
-        "requests",
-        "pydantic",
-        "dotenv"
+        "fastmcp>=0.4.1",
+        "google-generativeai>=0.8.0",
+        "requests>=2.31.0", 
+        "pydantic>=2.10.0",
+        "python-dotenv>=1.0.0"
     ]
     
+    # Check if we need to install anything
     missing = []
-    for package in required_packages:
-        try:
-            __import__(package.replace(".", "_") if "." in package else package)
-        except ImportError:
-            missing.append(package)
+    package_names = {
+        "fastmcp": "fastmcp",
+        "google-generativeai": "google.generativeai",
+        "requests": "requests",
+        "pydantic": "pydantic", 
+        "python-dotenv": "dotenv"
+    }
     
-    return missing
+    for pkg_name, import_name in package_names.items():
+        try:
+            __import__(import_name)
+        except ImportError:
+            missing.append(pkg_name)
+    
+    if missing:
+        print(f"Installing missing dependencies: {', '.join(missing)}", file=sys.stderr)
+        try:
+            subprocess.run([
+                sys.executable, "-m", "pip", "install", "--user"
+            ] + [pkg for pkg in required_packages if any(m in pkg for m in missing)], 
+            check=True, capture_output=True, text=True)
+            print("Dependencies installed successfully", file=sys.stderr)
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to install dependencies: {e}", file=sys.stderr)
+            print(f"pip stderr: {e.stderr}", file=sys.stderr)
+            return False
+    
+    return True
 
 def main():
     script_dir = Path(__file__).parent
@@ -55,13 +78,9 @@ def main():
             print(f"uv execution failed: {e}", file=sys.stderr)
             print("Falling back to regular Python...", file=sys.stderr)
     
-    # Fallback to regular Python
-    missing_deps = check_dependencies()
-    if missing_deps:
-        print(f"Error: Missing dependencies: {', '.join(missing_deps)}", file=sys.stderr)
-        print("Please install dependencies with:", file=sys.stderr)
-        print("  pip install fastmcp google-generativeai requests pydantic python-dotenv", file=sys.stderr)
-        print("Or use uv: uv sync", file=sys.stderr)
+    # Fallback to regular Python - install dependencies if needed
+    if not install_dependencies():
+        print("Failed to install required dependencies", file=sys.stderr)
         sys.exit(1)
     
     # Run with regular Python
