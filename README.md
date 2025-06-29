@@ -98,6 +98,8 @@ To use this MCP server with Claude Desktop, you need to manually configure it in
            "--with",
            "google-generativeai",
            "--with",
+           "google-genai",
+           "--with",
            "requests",
            "--with",
            "python-dotenv",
