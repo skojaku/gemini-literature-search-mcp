@@ -35,7 +35,12 @@ else:
     genai.configure(api_key=api_key)
 
 # Create MCP Server
-app = FastMCP("Gemini Literature Search")
+app = FastMCP(
+    title="Gemini Literature Search",
+    description="A server for academic literature search and validation using Google Gemini",
+    version="1.0.0",
+    dependencies=["google-generativeai", "requests", "python-dotenv"],
+)
 
 TRANSPORT = "sse"
 
