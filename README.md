@@ -64,7 +64,7 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
    ./run_gemini_server.sh
    
    # Or directly with uv
-   uv run gemini-literature-search
+   uv run python gemini_literature_search.py
    ```
 
 ## Integration with Claude Desktop
@@ -75,9 +75,6 @@ To use this MCP server with Claude Desktop:
    ```bash
    # Install from the project directory
    fastmcp install gemini_literature_search.py --name "Literature Search"
-   
-   # Or install directly with uv
-   uv run fastmcp install gemini_literature_search.py --name "Literature Search"
    ```
 
 2. Once installed, Claude will automatically have access to all the literature search tools and functions.
@@ -131,10 +128,6 @@ Generate a comprehensive summary of literature entries #1, #2, and #3 focused on
 
 For development and debugging, you can use the FastMCP development mode:
 ```bash
-# Using uv
-uv run fastmcp dev gemini_literature_search.py
-
-# Or traditional method
 fastmcp dev gemini_literature_search.py
 ```
 

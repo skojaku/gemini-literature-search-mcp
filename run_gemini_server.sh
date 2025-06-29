@@ -37,6 +37,6 @@ uv sync
 
 # Run the server
 echo "Starting server on http://localhost:8000..."
-uv run gemini-literature-search
+uv run python gemini_literature_search.py
 
 echo "Server stopped."
