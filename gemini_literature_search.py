@@ -11,12 +11,22 @@ except ImportError as e:
 
 try:
     import google.generativeai as genai
-    from google import genai as genai_client
-    from google.genai import types
 except ImportError as e:
     print(f"Error importing google.generativeai: {e}", file=sys.stderr)
     print("Make sure to install: pip install google-generativeai", file=sys.stderr)
     sys.exit(1)
+
+# Try to import grounding client (optional)
+try:
+    from google import genai as grounding_client
+    from google.genai import types
+    GROUNDING_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Grounding client not available: {e}", file=sys.stderr)
+    print("Internet search functionality will be limited", file=sys.stderr)
+    grounding_client = None
+    types = None
+    GROUNDING_AVAILABLE = False
 
 try:
     from mcp.server.fastmcp import FastMCP
@@ -38,10 +48,13 @@ if not api_key:
 else:
     genai.configure(api_key=api_key)
     # Also configure the new genai client for grounding
-    try:
-        client = genai_client.Client(api_key=api_key)
-    except Exception as e:
-        print(f"Warning: Could not initialize grounding client: {e}", file=sys.stderr)
+    if GROUNDING_AVAILABLE:
+        try:
+            client = grounding_client.Client(api_key=api_key)
+        except Exception as e:
+            print(f"Warning: Could not initialize grounding client: {e}", file=sys.stderr)
+            client = None
+    else:
         client = None
 
 # Create MCP Server
@@ -60,8 +73,11 @@ def get_gemini_model(model_name="gemini-2.0-flash-exp"):
 
 def search_with_grounding(query, model_name="gemini-2.0-flash-exp"):
     """Search using Gemini with Google Search grounding"""
-    if not client:
-        raise Exception("Grounding client not available. Check API key configuration.")
+    if not GROUNDING_AVAILABLE or not client:
+        # Fall back to regular Gemini without grounding
+        print("Warning: Using regular Gemini without grounding", file=sys.stderr)
+        model = get_gemini_model(model_name)
+        return model.generate_content(query)
     
     # Define the grounding tool
     grounding_tool = types.Tool(
