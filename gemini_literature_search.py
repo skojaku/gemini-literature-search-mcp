@@ -489,46 +489,83 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
         
         response = search_with_grounding(search_query, model)
         
-        # Debug: Always return the raw response first
+        # Always provide a structured response
         result = {
-            "raw_response": response.text if hasattr(response, 'text') else str(response),
+            "success": False,
             "sentence_analysis": [],
+            "error_details": None,
             "debug_info": {
                 "model_used": model,
                 "query_length": len(search_query),
-                "response_type": type(response).__name__
+                "response_received": bool(response),
+                "response_type": type(response).__name__ if response else "None"
             }
         }
         
+        if not response:
+            result["error_details"] = "No response received from Gemini API"
+            result["message"] = "Failed to get response from Gemini. Check API key and connectivity."
+            return result
+        
+        # Get response text
+        response_text = ""
+        if hasattr(response, 'text'):
+            response_text = response.text
+        elif hasattr(response, 'candidates') and response.candidates:
+            # Try to get text from candidates
+            candidate = response.candidates[0]
+            if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts'):
+                response_text = ''.join([part.text for part in candidate.content.parts if hasattr(part, 'text')])
+        
+        if not response_text:
+            result["error_details"] = "Empty response text from Gemini"
+            result["message"] = "Gemini returned empty response. The query may have been blocked or failed."
+            result["raw_response"] = str(response)
+            return result
+        
+        result["raw_response"] = response_text
+        result["debug_info"]["response_length"] = len(response_text)
+        
         # Try to extract JSON from response
         try:
-            if hasattr(response, 'text') and response.text:
-                # Look for JSON in the response
-                import re
-                json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
-                if json_match:
-                    try:
-                        result_data = json.loads(json_match.group())
-                        if isinstance(result_data, dict) and "sentence_analysis" in result_data:
-                            return result_data
-                        else:
-                            result["note"] = "JSON found but no sentence_analysis field"
-                            result["parsed_json"] = result_data
-                    except json.JSONDecodeError as je:
-                        result["note"] = f"JSON parse error: {str(je)}"
-                        result["json_text"] = json_match.group()[:500]  # First 500 chars
-                else:
-                    result["note"] = "No JSON pattern found in response"
+            import re
+            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+            if json_match:
+                try:
+                    result_data = json.loads(json_match.group())
+                    if isinstance(result_data, dict) and "sentence_analysis" in result_data:
+                        result_data["success"] = True
+                        return result_data
+                    else:
+                        result["error_details"] = "JSON found but missing required structure"
+                        result["message"] = "Gemini returned JSON but it doesn't contain sentence_analysis field"
+                        result["parsed_json"] = result_data
+                except json.JSONDecodeError as je:
+                    result["error_details"] = f"JSON parse error: {str(je)}"
+                    result["message"] = "Gemini response contains malformed JSON"
+                    result["json_text"] = json_match.group()[:500]  # First 500 chars
             else:
-                result["note"] = "No text attribute in response or empty response"
+                result["error_details"] = "No JSON pattern found in response"
+                result["message"] = "Gemini returned text but no JSON structure detected"
                 
         except Exception as parse_error:
-            result["note"] = f"Error during parsing: {str(parse_error)}"
+            result["error_details"] = f"Error during parsing: {str(parse_error)}"
+            result["message"] = "Unexpected error while processing Gemini response"
             
         return result
             
     except Exception as e:
-        return {"error": str(e)}
+        return {
+            "success": False,
+            "error": str(e),
+            "error_details": f"Exception in find_supporting_literature: {str(e)}",
+            "message": "An unexpected error occurred while searching for supporting literature",
+            "sentence_analysis": [],
+            "debug_info": {
+                "model_used": model,
+                "exception_type": type(e).__name__
+            }
+        }
 
 @app.tool()
 def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
