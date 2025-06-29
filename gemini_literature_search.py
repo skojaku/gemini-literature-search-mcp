@@ -51,25 +51,28 @@ def get_gemini_model():
 @app.tool()
 def search_literature(query: str, max_results: int = 10) -> dict:
     """
-    Search for academic literature using Gemini AI.
+    Search the internet for academic literature on a topic using Gemini.
     
     Args:
         query: Search query describing the research topic or keywords
         max_results: Maximum number of results to return (default: 10)
     
     Returns:
-        On success: {"results": <list of literature entries with details>}
+        On success: {"results": <list of papers found online>}
         On error: {"error": <error message>}
     
     Examples:
         >>> search_literature("machine learning applications in healthcare")
-        {'results': [{'title': '...', 'authors': [...], 'year': 2023, 'summary': '...'}]}
+        {'results': [{'title': '...', 'authors': [...], 'year': 2024, 'summary': '...'}]}
     """
     try:
         model = get_gemini_model()
         
         prompt = f"""
-        Please search for and provide information about recent academic literature on the topic: "{query}"
+        Please search the internet for recent academic literature on the topic: "{query}"
+        
+        Find {max_results} current and relevant academic papers by searching online academic sources.
+        Look for papers from Google Scholar, arXiv, PubMed, or other academic databases.
         
         For each paper you find, provide:
         1. Title
@@ -77,11 +80,8 @@ def search_literature(query: str, max_results: int = 10) -> dict:
         3. Publication year
         4. Brief summary/abstract
         5. Key findings or contributions
-        6. DOI or URL if available
-        7. Relevance score (0-1) to the query
-        
-        Please provide up to {max_results} most relevant and recent papers.
-        Focus on peer-reviewed academic papers, conference proceedings, and reputable journals.
+        6. Journal/venue
+        7. DOI or URL if available
         
         Return your response as a JSON array with format:
         [
@@ -91,9 +91,8 @@ def search_literature(query: str, max_results: int = 10) -> dict:
             "year": <year>,
             "summary": "<brief summary>",
             "key_findings": "<key contributions>",
-            "doi_or_url": "<DOI or URL if available>",
-            "relevance_score": <0.0-1.0>,
-            "source": "<journal/conference name>"
+            "venue": "<journal/conference name>",
+            "doi_or_url": "<DOI or URL if available>"
           }}
         ]
         """
