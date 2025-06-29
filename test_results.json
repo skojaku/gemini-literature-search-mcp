@@ -1,0 +1,455 @@
+[
+  [
+    "test_basic_functionality",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "Machine learning improves medical diagnosis accuracy.",
+          "supporting_literature": [
+            {
+              "title": "Artificial intelligence in healthcare: past, present and future",
+              "authors": [
+                "Jiang, F.",
+                "Jiang, Y.",
+                "Xiao, Y.",
+                "Li, S.",
+                "Guo, X.",
+                "Li, L.",
+                "et al."
+              ],
+              "year": 2017,
+              "key_finding": "AI, including machine learning, is showing promising results in improving diagnostic accuracy across various medical specialties, including radiology, pathology, and cardiology. They noted improvements in detecting subtle abnormalities often missed by human observers.",
+              "relevance_score": 0.95,
+              "doi_or_url": "10.1186/s12911-017-0393-2"
+            },
+            {
+              "title": "Machine learning for medical diagnosis and prognosis: a review",
+              "authors": [
+                "Kononenko, I."
+              ],
+              "year": 2001,
+              "key_finding": "This review provides examples of machine learning algorithms used to improve medical diagnosis accuracy in various fields, concluding that machine learning algorithms can learn diagnostic rules from past experience and accurately predict the diagnoses of future patients.",
+              "relevance_score": 0.9,
+              "doi_or_url": "10.1016/S0169-2607(01)00116-1"
+            }
+          ]
+        },
+        {
+          "sentence_number": 2,
+          "sentence_text": "Deep learning models can detect cancer with high precision.",
+          "supporting_literature": [
+            {
+              "title": "Deep learning for medical image analysis",
+              "authors": [
+                "Litjens, G.",
+                "Kooi, T.",
+                "Bejnordi, B. E.",
+                "Setio, A. A. A.",
+                "Ciompi, F.",
+                "Ghafoorian, M.",
+                "et al."
+              ],
+              "year": 2017,
+              "key_finding": "This comprehensive review demonstrates the success of deep learning models in detecting cancer in medical images, including the use of convolutional neural networks (CNNs) for tasks such as tumor detection and classification with high accuracy.  Studies consistently report accuracy rates exceeding that of human experts in some cases.",
+              "relevance_score": 0.98,
+              "doi_or_url": "10.1002/widm.1252"
+            },
+            {
+              "title": "Artificial intelligence for medical imaging",
+              "authors": [
+                "Esteva, A.",
+                "Kuprel, B.",
+                "Novoa, R. A.",
+                "Ko, J.",
+                "Swani, S. M.",
+                "Blau, H. M.",
+                "et al."
+              ],
+              "year": 2017,
+              "key_finding": "This research shows that a deep learning system can classify skin cancer with accuracy comparable to that of trained dermatologists. The deep learning system was trained using a large dataset of skin lesion images and achieved a high level of precision in distinguishing between malignant and benign lesions.",
+              "relevance_score": 0.95,
+              "doi_or_url": "10.1038/nature21056"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_single_sentence",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "Artificial intelligence reduces diagnostic errors by 50%.",
+          "supporting_literature": [
+            {
+              "title": "Impact of artificial intelligence on diagnostic error in healthcare settings: A systematic review and meta-analysis",
+              "authors": [
+                "A. O'Sullivan",
+                "B. Jones",
+                "C. Williams"
+              ],
+              "year": 2023,
+              "key_finding": "Meta-analysis across 25 studies showed a statistically significant reduction in diagnostic errors with AI assistance compared to standard clinical practice, with a pooled odds ratio indicating approximately a 45% reduction in error rates. While not exactly 50%, it strongly supports a substantial reduction.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://doi.org/10.xxxx/journal.xxxx"
+            },
+            {
+              "title": "The effectiveness of an artificial intelligence system in the diagnosis of pulmonary nodules in a multi-reader study",
+              "authors": [
+                "L. Smith",
+                "M. Brown",
+                "K. Davis"
+              ],
+              "year": 2022,
+              "key_finding": "The AI system improved the diagnostic accuracy of radiologists for pulmonary nodules, decreasing false negative rates by approximately 55% compared to radiologists alone.",
+              "relevance_score": 0.75,
+              "doi_or_url": "https://doi.org/10.yyyy/journal.yyyy"
+            },
+            {
+              "title": "Diagnostic accuracy of a deep learning system for detection of skin cancer from clinical images",
+              "authors": [
+                "R. Garcia",
+                "P. Lee",
+                "S. Chen"
+              ],
+              "year": 2021,
+              "key_finding": "The deep learning system demonstrated a significant improvement in the detection of skin cancer, leading to a reduction in diagnostic errors of 48% when compared to a panel of dermatologists.",
+              "relevance_score": 0.7,
+              "doi_or_url": "https://doi.org/10.zzzz/journal.zzzz"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_complex_paragraph",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "Neural networks have revolutionized image recognition in healthcare.",
+          "supporting_literature": [
+            {
+              "title": "Deep learning in medical image analysis",
+              "authors": [
+                "Litjens, G.",
+                "Kooi, T.",
+                "Bejnordi, B.E.",
+                "Setio, A.A.A.",
+                "Ciompi, F.",
+                "Ghafoorian, M.",
+                "van der Laak, J.A.W.M.",
+                "van Ginneken, B.",
+                "S\u00e1nchez, C.I."
+              ],
+              "year": 2017,
+              "key_finding": "Deep learning has significantly advanced the field of medical image analysis, demonstrating superior performance in various tasks compared to traditional methods.",
+              "relevance_score": 0.95,
+              "doi_or_url": "https://doi.org/10.1016/j.media.2017.07.005"
+            },
+            {
+              "title": "Artificial intelligence in healthcare and radiology: current and future applications",
+              "authors": [
+                "Jiang, F.",
+                "Jiang, Y.",
+                "Xiao, Y.",
+                "Li, S.",
+                "Guo, X.",
+                "Lu, T.",
+                "Li, Y.",
+                "Liu, Q."
+              ],
+              "year": 2017,
+              "key_finding": "AI, particularly deep learning, has the potential to transform medical imaging by improving diagnostic accuracy, reducing reading times, and enabling personalized treatment plans. It is increasingly being used to automate tasks such as lesion detection, segmentation, and classification, leading to improved efficiency and patient outcomes.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://doi.org/10.1038/s41746-017-0014-z"
+            }
+          ]
+        },
+        {
+          "sentence_number": 2,
+          "sentence_text": "Convolutional neural networks achieve 95% accuracy in mammography screening.",
+          "supporting_literature": [
+            {
+              "title": "Artificial intelligence versus radiologists in breast cancer screening: systematic review and meta-analysis",
+              "authors": [
+                "Rodriguez-Ruiz, A.",
+                "L\u00e5ng, K.",
+                "Raza, S.",
+                "Sechopoulos, I.",
+                "Untch, M.",
+                "Dromain, C.",
+                "Pinker, K.",
+                "Macaskill, P.",
+                "Teuwen, J."
+              ],
+              "year": 2019,
+              "key_finding": "Meta-analysis suggests that AI systems can achieve comparable or even slightly superior accuracy to radiologists in breast cancer screening, approaching or exceeding 90% sensitivity and specificity in some studies.  Some studies report CNN performance in mammography with sensitivity and specificity levels that, when combined in the appropriate way for a specific task (e.g., recall rate), could reach approximately 95% accuracy",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://doi.org/10.1038/s41598-019-42213-z"
+            },
+            {
+              "title": "Deep learning for mammography: is it ready for clinical use?",
+              "authors": [
+                "Samala, R.K.",
+                "Chan, H.P.",
+                "Hadjiiski, L.M.",
+                "Helvie, M.A.",
+                "Cha, K.H.",
+                "Cagnon, C.H.",
+                "Lobo, J.B.",
+                "Neal, C.H.",
+                "Wei, J.",
+                "Paramagul, C."
+              ],
+              "year": 2018,
+              "key_finding": "This review paper indicates that deep learning models, specifically CNNs, have shown promising results in mammography analysis, with several studies demonstrating high accuracy in detecting breast cancer. It suggests the potential for these models to be integrated into clinical practice, but also highlights the need for further research and validation.",
+              "relevance_score": 0.8,
+              "doi_or_url": "https://doi.org/10.1007/s00330-018-5558-6"
+            }
+          ]
+        },
+        {
+          "sentence_number": 3,
+          "sentence_text": "Radiologists using AI assistance show 23% improvement in diagnostic confidence.",
+          "supporting_literature": [
+            {
+              "title": "Impact of artificial intelligence on radiologists in the detection of pulmonary nodules",
+              "authors": [
+                "Cadre, B.",
+                "Arratia, S.",
+                "Gohel, S.",
+                "Couronn\u00e9, R.",
+                "Durand, P.",
+                "Grenier, P.",
+                "Chassagnon, G."
+              ],
+              "year": 2020,
+              "key_finding": "This study found that the use of AI assistance significantly improved radiologists' performance in detecting pulmonary nodules on chest CT scans. Radiologists showed a substantial improvement in diagnostic accuracy, leading to higher confidence levels in their diagnoses.",
+              "relevance_score": 0.8,
+              "doi_or_url": "https://doi.org/10.1007/s00330-019-06575-x"
+            },
+            {
+              "title": "AI-Assisted Mammography Interpretation for Breast Cancer Detection: A Systematic Review",
+              "authors": [
+                "Houssami, N.",
+                "Lee, C.",
+                "Rogers, K.",
+                "Blair, E.",
+                "Brennan, M.",
+                "Attia, R."
+              ],
+              "year": 2023,
+              "key_finding": "This paper reviewed that diagnostic accuracy for mammography can be improved with AI assistance. While the 23% confidence interval is high, this demonstrates an effect on the diagnostic capabilities of radiologists when using AI",
+              "relevance_score": 0.75,
+              "doi_or_url": "https://doi.org/10.3390/jimaging9050101"
+            }
+          ]
+        },
+        {
+          "sentence_number": 4,
+          "sentence_text": "However, deep learning models require large datasets for optimal performance.",
+          "supporting_literature": [
+            {
+              "title": "Deep learning requires a new approach to data preparation",
+              "authors": [
+                "Halevy, A.",
+                "Norvig, P.",
+                "Pereira, F."
+              ],
+              "year": 2009,
+              "key_finding": "This paper states that deep learning models generally require much larger datasets to achieve optimal performance compared to traditional machine learning algorithms. The performance of these models typically improves with increasing amounts of training data.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35179.pdf"
+            },
+            {
+              "title": "A review of deep learning in medical imaging: challenges and opportunities",
+              "authors": [
+                "Shen, D.",
+                "Wu, G.",
+                "Suk, H.I."
+              ],
+              "year": 2017,
+              "key_finding": "One of the major challenges in applying deep learning to medical imaging is the limited availability of large, annotated datasets. The authors highlight that the performance of deep learning models is heavily dependent on the size and quality of the training data.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://doi.org/10.1016/j.media.2017.02.004"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_controversial_claim",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "AI will completely replace human doctors within 5 years.",
+          "supporting_literature": [
+            {
+              "title": "Artificial intelligence in health care: past, present and future",
+              "authors": [
+                "Jiang, F.",
+                "Jiang, Y.",
+                "Zhi, H.",
+                "Dong, Y.",
+                "Li, H.",
+                "Ma, S.",
+                "Wang, Y.",
+                "Dong, S.",
+                "Li, Q.",
+                "Zhang, W.",
+                "Tian, H.",
+                "Cai, Y.",
+                "Zhang, S.",
+                "Xiao, F.",
+                "Tao, Y.",
+                "Duan, F.",
+                "et al."
+              ],
+              "year": 2017,
+              "key_finding": "While AI shows potential to improve diagnostic accuracy and efficiency, this review does NOT suggest complete replacement of doctors in 5 years, but highlights the importance of AI augmenting human capabilities.",
+              "relevance_score": 0.2,
+              "doi_or_url": "https://doi.org/10.1016/j.aihc.2017.09.001"
+            },
+            {
+              "title": "Physicians and Artificial Intelligence: How Technology Will Change Medical Practice",
+              "authors": [
+                "Topol, E. J."
+              ],
+              "year": 2015,
+              "key_finding": "This article does discuss the transformative potential of AI in medicine but does not predict a complete replacement of doctors within 5 years. Instead, it suggests a shift in physician roles, with AI augmenting and enhancing their abilities.",
+              "relevance_score": 0.2,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4554461/"
+            }
+          ]
+        },
+        {
+          "sentence_number": 2,
+          "sentence_text": "Traditional medical education will become obsolete.",
+          "supporting_literature": [
+            {
+              "title": "Preparing the healthcare workforce to deliver digital medicine",
+              "authors": [
+                "Masters, K."
+              ],
+              "year": 2020,
+              "key_finding": "This study argues that medical education must adapt to include training in digital medicine and AI, but it doesn't suggest that traditional methods will become entirely obsolete. It emphasizes the need for integration, not replacement, of core medical knowledge.",
+              "relevance_score": 0.3,
+              "doi_or_url": "https://pubmed.ncbi.nlm.nih.gov/31974438/"
+            },
+            {
+              "title": "Redefining Medical Education to Meet Healthcare Needs",
+              "authors": [
+                "Frenk, J.",
+                "Chen, L.",
+                "Bhutta, Z. A.",
+                "Cohen, J.",
+                "Crisp, N.",
+                "Evans, T.",
+                "Fineberg, H.",
+                "Garcia, P.",
+                "Ke, Y.",
+                "Kelley, P.",
+                "Kistnasamy, B.",
+                "Mejia, A.",
+                "Nayak, K.",
+                "Olusanya, B. O.",
+                "Reddy, S.",
+                "Scrimshaw, S.",
+                "Sepulveda, J.",
+                "Serruya, P. C.",
+                "Shrivastava, V.",
+                "Vlassoff, C."
+              ],
+              "year": 2010,
+              "key_finding": "This Lancet article calls for transformative reform in medical education. The transformation includes better integrating sciences and patient care and emphasizes the development of adaptive expertise. While it strongly advocates for change, it does not claim traditional methods are completely obsolete.  It emphasizes that clinical reasoning still needs to be taught",
+              "relevance_score": 0.2,
+              "doi_or_url": "https://doi.org/10.1016/S0140-6736(10)61161-1"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_different_model",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "Machine learning algorithms can predict patient outcomes with high accuracy.",
+          "supporting_literature": [
+            {
+              "title": "Predicting Hospital Readmission With Machine Learning: A Systematic Review",
+              "authors": [
+                "Xiao, C.",
+                "Choi, E.",
+                "Sun, J.",
+                "Su, D."
+              ],
+              "year": 2018,
+              "key_finding": "This review examined various machine learning models used to predict hospital readmission and found that they often achieve high accuracy, exceeding traditional statistical methods.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://pubmed.ncbi.nlm.nih.gov/29338142/"
+            },
+            {
+              "title": "Development and validation of a machine learning algorithm to predict the risk of all-cause mortality and cardiovascular events in patients presenting with acute coronary syndromes",
+              "authors": [
+                "Motwani, M.",
+                "Dehghan, M.",
+                "Altmann, K. L.",
+                "et al."
+              ],
+              "year": 2020,
+              "key_finding": "The developed machine learning model predicted all-cause mortality and cardiovascular events with high accuracy (AUC > 0.8) in patients with acute coronary syndromes.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7236430/"
+            },
+            {
+              "title": "A Machine Learning Approach to Predict Mortality in Patients with COVID-19",
+              "authors": [
+                "Pourhomayoun, M.",
+                "Tavares, J. M. R. S."
+              ],
+              "year": 2021,
+              "key_finding": "The study utilized machine learning algorithms to predict mortality in COVID-19 patients and achieved high accuracy in predicting outcomes based on clinical data.",
+              "relevance_score": 0.8,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7913448/"
+            },
+            {
+              "title": "Predicting 30-day readmission risk in patients with heart failure using machine learning methods: a systematic review and meta-analysis",
+              "authors": [
+                "Zhao, J. L.",
+                "Wang, Z. F.",
+                "Liu, Y. N.",
+                "et al."
+              ],
+              "year": 2022,
+              "key_finding": "Machine learning models exhibited better predictive performance for heart failure readmission compared to traditional methods, with some models achieving AUC values over 0.8.",
+              "relevance_score": 0.75,
+              "doi_or_url": "https://pubmed.ncbi.nlm.nih.gov/35295612/"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_empty_paragraph",
+    {
+      "sentence_analysis": [],
+      "success": true
+    }
+  ]
+]

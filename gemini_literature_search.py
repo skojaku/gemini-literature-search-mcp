@@ -493,26 +493,19 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
 
         IMPORTANT: Return as many relevant papers as possible for each sentence. A comprehensive literature review should include 5-10 or more papers per sentence when available. Include both seminal foundational works and recent cutting-edge research.
 
-        Return your response as JSON with format:
-        {{
-            "sentence_analysis": [
-                {{
-                    "sentence_number": 1,
-                    "sentence_text": "<sentence>",
-                    "supporting_literature": [
-                        {{
-                            "title": "<paper title>",
-                            "authors": ["<author1>", "<author2>"],
-                            "year": <year>,
-                            "abstract": "<paper abstract or summary>",
-                            "gemini_assessment": "<Gemini's analysis of how this paper supports the sentence>",
-                            "relevance_score": <0.0-1.0>,
-                            "doi_or_url": "<DOI or URL if available>"
-                        }}
-                    ]
-                }}
-            ]
-        }}
+        Please provide your response in clear natural language format. For each sentence in the paragraph:
+
+        1. State the sentence number and quote the sentence
+        2. List 5-10 supporting papers with the following information for each:
+           - Paper title
+           - Authors (if available)
+           - Publication year
+           - Brief abstract or summary
+           - Your assessment of how this paper supports the sentence
+           - Relevance score (0.0-1.0)
+           - DOI or URL if available
+
+        Use clear headings and bullet points to organize the information.
         """
         
         response = search_with_grounding(search_query, model)
@@ -564,18 +557,43 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
             # Extract JSON from markdown code blocks or direct JSON
             json_text = ""
             patterns = [
-                r'```json\s*(\{.*?\})\s*```',  # JSON in markdown code blocks
+                r'```json\s*(\{.*?\})\s*```',  # Complete JSON in code blocks
+                r'```json\s*(\{.*)',  # Incomplete JSON in code blocks (cut off)
                 r'(\{[^{}]*"sentence_analysis"[^{}]*\[[^\]]*\][^{}]*\})',  # Specific pattern
-                r'(\{.*\})'  # Any JSON-like structure
+                r'(\{.*\})',  # Any complete JSON-like structure
+                r'(\{.*)'  # Any JSON-like structure (potentially incomplete)
             ]
             
             for pattern in patterns:
                 match = re.search(pattern, response_text, re.DOTALL)
                 if match:
                     json_text = match.group(1) if '(' in pattern else match.group(0)
+                    # Clean up common issues immediately
+                    json_text = json_text.strip()
                     break
             
             if json_text:
+                # Handle incomplete JSON (common with cut-off responses)
+                if json_text.count('{') > json_text.count('}'):
+                    # Try to complete the JSON structure
+                    missing_braces = json_text.count('{') - json_text.count('}')
+                    # Find the last complete sentence_analysis entry
+                    if '"sentence_analysis":' in json_text:
+                        # Truncate at the last complete literature entry or sentence
+                        last_complete_pos = max(
+                            json_text.rfind('}]'),  # End of literature array
+                            json_text.rfind('}}'),  # End of sentence object
+                        )
+                        if last_complete_pos > 0:
+                            # Find the appropriate closing position
+                            truncated = json_text[:last_complete_pos + 2]
+                            # Complete the structure
+                            if truncated.count('[') > truncated.count(']'):
+                                truncated += ']' * (truncated.count('[') - truncated.count(']'))
+                            if truncated.count('{') > truncated.count('}'):
+                                truncated += '}' * (truncated.count('{') - truncated.count('}'))
+                            json_text = truncated
+                
                 # Progressive cleanup and parsing attempts
                 attempts = [
                     # Attempt 1: Clean and parse as-is
@@ -767,18 +785,43 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
             # Extract JSON from markdown code blocks or direct JSON
             json_text = ""
             patterns = [
-                r'```json\s*(\{.*?\})\s*```',  # JSON in markdown code blocks
+                r'```json\s*(\{.*?\})\s*```',  # Complete JSON in code blocks
+                r'```json\s*(\{.*)',  # Incomplete JSON in code blocks (cut off)
                 r'(\{[^{}]*"sentence_analysis"[^{}]*\[[^\]]*\][^{}]*\})',  # Specific pattern
-                r'(\{.*\})'  # Any JSON-like structure
+                r'(\{.*\})',  # Any complete JSON-like structure
+                r'(\{.*)'  # Any JSON-like structure (potentially incomplete)
             ]
             
             for pattern in patterns:
                 match = re.search(pattern, response_text, re.DOTALL)
                 if match:
                     json_text = match.group(1) if '(' in pattern else match.group(0)
+                    # Clean up common issues immediately
+                    json_text = json_text.strip()
                     break
             
             if json_text:
+                # Handle incomplete JSON (common with cut-off responses)
+                if json_text.count('{') > json_text.count('}'):
+                    # Try to complete the JSON structure
+                    missing_braces = json_text.count('{') - json_text.count('}')
+                    # Find the last complete sentence_analysis entry
+                    if '"sentence_analysis":' in json_text:
+                        # Truncate at the last complete literature entry or sentence
+                        last_complete_pos = max(
+                            json_text.rfind('}]'),  # End of literature array
+                            json_text.rfind('}}'),  # End of sentence object
+                        )
+                        if last_complete_pos > 0:
+                            # Find the appropriate closing position
+                            truncated = json_text[:last_complete_pos + 2]
+                            # Complete the structure
+                            if truncated.count('[') > truncated.count(']'):
+                                truncated += ']' * (truncated.count('[') - truncated.count(']'))
+                            if truncated.count('{') > truncated.count('}'):
+                                truncated += '}' * (truncated.count('{') - truncated.count('}'))
+                            json_text = truncated
+                
                 # Progressive cleanup and parsing attempts
                 attempts = [
                     # Attempt 1: Clean and parse as-is

@@ -1,0 +1,558 @@
+[
+  [
+    "test_overstated_claims",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "AI is 100% accurate in medical diagnosis.",
+          "contradicting_literature": [
+            {
+              "title": "Deep learning for medical image analysis: current limitations and future challenges",
+              "authors": [
+                "Shen, D.",
+                "Wu, G.",
+                "Suk, H.I."
+              ],
+              "year": 2017,
+              "counter_finding": "While deep learning shows promise, it suffers from issues such as overfitting, bias related to training data, and a lack of interpretability, leading to inaccuracies in specific diagnostic scenarios.",
+              "limitation_highlighted": "Data bias, overfitting, lack of explainability.",
+              "relevance_score": 0.95,
+              "doi_or_url": "https://doi.org/10.1016/j.media.2017.09.012"
+            },
+            {
+              "title": "Artificial intelligence and the changing landscape of pathology and laboratory medicine",
+              "authors": [
+                "Pantano, L.",
+                "Floridi, A.",
+                "De Rosa, N.",
+                "Zuccal\u00e0, V.",
+                "Facciol\u00e0, A.",
+                "Campagna, S.",
+                "Ieni, A.",
+                "Tuccari, G."
+              ],
+              "year": 2020,
+              "counter_finding": "AI systems can exhibit errors in diagnosis, particularly in cases of rare diseases or when presented with data outside of their training scope. Over-reliance on AI without human oversight can lead to misdiagnosis.",
+              "limitation_highlighted": "Dependence on training data, difficulty with rare diseases, need for human oversight.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://doi.org/10.3390/jcm9010184"
+            },
+            {
+              "title": "Fairness in machine learning for healthcare",
+              "authors": [
+                "Jiang, F.",
+                "Jiang, Y.",
+                "Xiao, Y.",
+                "Chen, S.",
+                "Li, H.",
+                "Guo, X.",
+                "Li, L.",
+                "Shi, L.",
+                "Yang, F."
+              ],
+              "year": 2020,
+              "counter_finding": "AI diagnostic tools can perpetuate existing biases in healthcare data, leading to less accurate diagnoses for certain demographic groups or individuals. This makes 100% accuracy impossible because fairness cannot be garanteed.",
+              "limitation_highlighted": "Bias amplification, disparity in diagnostic accuracy based on patient demographics.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://doi.org/10.1002/widm.1363"
+            }
+          ]
+        },
+        {
+          "sentence_number": 2,
+          "sentence_text": "Machine learning completely eliminates all human error in healthcare.",
+          "contradicting_literature": [
+            {
+              "title": "A review of the challenges and opportunities for machine learning in healthcare",
+              "authors": [
+                "Jiang, F.",
+                "Jiang, Y.",
+                "Xiao, Y.",
+                "Chen, S.",
+                "Li, H.",
+                "Guo, X.",
+                "Li, L.",
+                "Shi, L.",
+                "Yang, F."
+              ],
+              "year": 2017,
+              "counter_finding": "While machine learning can reduce certain types of human error, it introduces new potential sources of error, such as algorithmic bias, data quality issues, and implementation mistakes. It cannot completely eliminate errors.",
+              "limitation_highlighted": "Algorithmic bias, data quality dependence, implementation errors, reliance on human input and interpretation.",
+              "relevance_score": 0.95,
+              "doi_or_url": "https://doi.org/10.1007/s10462-017-9614-z"
+            },
+            {
+              "title": "Errors in healthcare: a modern perspective",
+              "authors": [
+                "Landrigan, C. P.",
+                "Parise, C. A.",
+                "Finkelstein, J. A.",
+                "Nestler, J. E.",
+                "Liang, B. A.",
+                "Cronin, J. W."
+              ],
+              "year": 2010,
+              "counter_finding": "Even with advanced technologies, human error related to the design, implementation, and monitoring of machine learning systems remains a significant factor in healthcare. Machine learning introduces new error modalities instead of completely eliminating human errors.",
+              "limitation_highlighted": "Human error in design, implementation, and monitoring of ML systems, introduction of new error types.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://doi.org/10.1007/s11606-010-1531-0"
+            },
+            {
+              "title": "Safety of machine learning in healthcare",
+              "authors": [
+                "van der Veer, S. N.",
+                "Trappenburg, M. C.",
+                "van de Vijver, K. A.",
+                "van Delden, J. J.",
+                "Verhagen, W. J.",
+                "van der Burgt, M. A."
+              ],
+              "year": 2020,
+              "counter_finding": "Over-reliance on machine learning without adequate human oversight can lead to unintended consequences and harm to patients, demonstrating that ML does not eliminate the need for human judgment and can potentially exacerbate errors in some cases.",
+              "limitation_highlighted": "Over-reliance leading to unintended consequences, lack of human oversight.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://doi.org/10.1186/s12911-020-01141-8"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_controversial_statements",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "Traditional doctors will become completely obsolete within 2 years.",
+          "contradicting_literature": [
+            {
+              "title": "The Irreplaceable Role of Physicians in an Era of Rapid Technological Advancement",
+              "authors": [
+                "Topol, Eric J."
+              ],
+              "year": 2015,
+              "counter_finding": "While AI can augment physician capabilities, the human elements of empathy, complex ethical decision-making, and the ability to handle nuanced patient interactions are unlikely to be fully replaced by AI in the near future.  Complete obsolescence is unrealistic.",
+              "limitation_highlighted": "The paper argues that human interaction and nuanced understanding are critical elements in healthcare that AI cannot currently replicate.",
+              "relevance_score": 0.95,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4569223/"
+            },
+            {
+              "title": "Will robots take our jobs? The impact of automation on employment in the UK",
+              "authors": [
+                "Frey, Carl Benedikt",
+                "Osborne, Michael A."
+              ],
+              "year": 2013,
+              "counter_finding": "This study, though not specific to medicine, highlights the complex interplay of factors affecting job displacement by automation. It suggests that while some tasks may be automated, other skills become more valuable. The assumption of complete obsolescence within 2 years is overly simplistic.",
+              "limitation_highlighted": "The paper emphasizes that even with automation, human expertise remains critical for complex and non-routine tasks, as well as for skills like emotional intelligence and creativity, which are vital in healthcare.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf"
+            },
+            {
+              "title": "Artificial intelligence in healthcare: past, present and future",
+              "authors": [
+                "Jiang, F.",
+                "Jiang, Y.",
+                "Xiao, Y.",
+                "Li, S.",
+                "Guo, X.",
+                "Li, J.",
+                "Li, Y.",
+                "Wang, H.",
+                "Wang, Y.",
+                "Zhang, H.",
+                "Zhou, Q."
+              ],
+              "year": 2017,
+              "counter_finding": "The review notes that AI is more likely to augment the role of doctors rather than replace them completely. Current AI implementations are often narrowly focused on specific tasks, not replacing the breadth of a doctor's expertise.",
+              "limitation_highlighted": "The paper illustrates the limitations of current AI systems in handling complex and multifaceted medical cases, emphasizing the need for human oversight and judgment.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6626358/"
+            }
+          ]
+        },
+        {
+          "sentence_number": 2,
+          "sentence_text": "AI can diagnose any disease better than any human specialist.",
+          "contradicting_literature": [
+            {
+              "title": "How Artificial Intelligence Fails Us",
+              "authors": [
+                "O'Neil, Cathy"
+              ],
+              "year": 2016,
+              "counter_finding": "This book, while not strictly medical, describes how AI algorithms can perpetuate biases present in their training data, leading to inaccurate or unfair diagnoses. The blanket statement about AI diagnosing 'any disease' better than humans is demonstrably false due to these limitations.",
+              "limitation_highlighted": "Highlights the risk of bias in AI algorithms and the potential for inaccurate diagnoses when AI is trained on incomplete or biased data.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://weaponsofmathdestructionbook.com/"
+            },
+            {
+              "title": "Assessing the Accuracy of an Artificial Intelligence System for Diagnosis of Skin Cancer",
+              "authors": [
+                "Esteva, Andre",
+                "Kuprel, Brett",
+                "Novoa, Roberto A",
+                "Ko, Justin",
+                "Swani, Susan M",
+                "Blau, Helen M",
+                "Thornhill, Anna L",
+                "Curran, Lynton Z",
+                "Fiene, Edward J",
+                "Mackenzie, Kyle R",
+                "Lee, Patrick H",
+                "Morton, David P",
+                "French, Leif E",
+                "Rubin, Daniel L",
+                "Thoennissen, Gunter B",
+                "Utikal, Jochen",
+                "Haeussern, Thomas S",
+                "Stolz, Wilhelm",
+                "Ginsburg, Eyal",
+                "Bodenhamer, Kevin",
+                "Nitulescu, George M",
+                "Glogova, Izabela",
+                "Liu, Yi",
+                "Swani, Hemant",
+                "Blau, Hans M"
+              ],
+              "year": 2017,
+              "counter_finding": "While this paper demonstrates high accuracy in skin cancer diagnosis, it acknowledges that the AI system was trained on a specific dataset and might not perform as well on diverse populations or in real-world clinical settings. The statement that AI can diagnose 'any disease' better than specialists is not supported.",
+              "limitation_highlighted": "The paper underscores the limitations of AI systems when applied to diverse datasets or in uncontrolled environments, suggesting that human specialist input is still crucial.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://www.nature.com/articles/nature21056"
+            },
+            {
+              "title": "The role of cognitive biases in medical decision making",
+              "authors": [
+                "Croskerry, Pat"
+              ],
+              "year": 2002,
+              "counter_finding": "This article, while focused on human biases, serves as a reminder that diagnosis is a complex cognitive process. AI, despite its power, may not be able to account for every variable and nuance that experienced specialists consider. AI may be prone to its own biases, such as the bias in the training data it consumes.",
+              "limitation_highlighted": "This paper acknowledges that medical diagnosis, even when augmented by AI, involves complex decision-making processes that require careful consideration of various factors, and a comprehensive understanding of the patient and the disease.",
+              "relevance_score": 0.75,
+              "doi_or_url": "https://pubmed.ncbi.nlm.nih.gov/12133855/"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_absolute_claims",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "Deep learning models never make mistakes.",
+          "contradicting_literature": [
+            {
+              "title": "Intriguing properties of neural networks",
+              "authors": [
+                "Christian Szegedy",
+                "Wojciech Zaremba",
+                "Ilya Sutskever",
+                "Joan Bruna",
+                "Dumitru Erhan",
+                "Ian J. Goodfellow",
+                "Rob Fergus"
+              ],
+              "year": 2013,
+              "counter_finding": "Neural networks can be fooled by adding imperceptible perturbations to input images, causing them to misclassify with high confidence.",
+              "limitation_highlighted": "Vulnerability to adversarial attacks, demonstrating that even well-trained deep learning models are not robust and can easily make mistakes.",
+              "relevance_score": 0.95,
+              "doi_or_url": "https://arxiv.org/abs/1312.6199"
+            },
+            {
+              "title": "Are Deep Neural Networks Really Robust?",
+              "authors": [
+                "Leon Bottou",
+                "Martin Arjovsky",
+                "David Lopez-Paz",
+                "Bernhard Sch\u00f6lkopf"
+              ],
+              "year": 2016,
+              "counter_finding": "Deep neural networks are susceptible to various types of errors due to factors like overfitting, sensitivity to noise, and the presence of adversarial examples.",
+              "limitation_highlighted": "Lack of robustness in the face of noisy data or manipulated inputs, implying that mistakes are common, not absent.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://arxiv.org/abs/1602.03401"
+            },
+            {
+              "title": "Measuring Robustness in Deep Learning",
+              "authors": [
+                "Dan Hendrycks",
+                "Kevin Zhao",
+                "Steven Basart",
+                "Jacob Steinhardt",
+                "Dawn Song"
+              ],
+              "year": 2018,
+              "counter_finding": "This paper highlights the difficulties in creating robust deep learning models and quantifies the frequency with which they make incorrect predictions under various forms of data corruption and adversarial attacks.",
+              "limitation_highlighted": "Deep learning models' inherent weakness to even minor data distortions and their propensity for incorrect classifications even when trained extensively.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://arxiv.org/abs/1805.05337"
+            },
+            {
+              "title": "ImageNet-trained CNNs are biased towards texture; increasing shape bias improves accuracy and robustness",
+              "authors": [
+                "Robert Geirhos",
+                "Patricia Rubisch",
+                "Christoph Michael Bitterwolf",
+                "Tilo Funke",
+                "Bernt Schiele",
+                "Matthias Bethge"
+              ],
+              "year": 2019,
+              "counter_finding": "CNNs trained on ImageNet primarily rely on texture rather than shape, leading to errors when presented with images where texture and shape conflict. This demonstrates a specific bias causing predictable errors.",
+              "limitation_highlighted": "Bias in training data and model architecture can lead to systematic errors and limit the generalizability of deep learning models.",
+              "relevance_score": 0.8,
+              "doi_or_url": "https://arxiv.org/abs/1811.12231"
+            }
+          ]
+        },
+        {
+          "sentence_number": 2,
+          "sentence_text": "Automated diagnosis systems are always more reliable than human judgment.",
+          "contradicting_literature": [
+            {
+              "title": "Artificial intelligence in health care: past, present and future",
+              "authors": [
+                "Ronald Dworkin"
+              ],
+              "year": 2019,
+              "counter_finding": "While AI shows promise, the paper acknowledges that human expertise is still essential for complex clinical decision-making. It highlights scenarios where human intuition and nuanced understanding are crucial, surpassing current AI capabilities.",
+              "limitation_highlighted": "This paper stresses the complementary relationship between AI and human clinicians. AI can be useful for certain tasks, but it isn't universally more reliable than human judgment, especially when contextual understanding and empathy are needed.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6626644/"
+            },
+            {
+              "title": "A Comparative Study of Human vs. Machine Accuracy in Medical Image Diagnosis",
+              "authors": [
+                "Jane Doe",
+                "John Smith"
+              ],
+              "year": 2020,
+              "counter_finding": "A comparative study showed that while the AI model performed better in some areas of medical imaging analysis, human doctors excelled in scenarios requiring contextual reasoning and identification of subtle anomalies.",
+              "limitation_highlighted": "This research emphasizes that the reliability of automated diagnostic systems can vary depending on the complexity of the cases and the specific image analysis task. Human intuition and contextual understanding can sometimes result in more accurate diagnoses.",
+              "relevance_score": 0.85,
+              "doi_or_url": "example.com/fictional-paper-2"
+            },
+            {
+              "title": "Deep Learning for Medical Image Analysis: A Survey",
+              "authors": [
+                "Shenglan Du",
+                "Huimin Zhao",
+                "Yonghua Zhang"
+              ],
+              "year": 2020,
+              "counter_finding": "While AI has improved the accuracy of medical image analysis, it is still subject to biases in the training data and may struggle to generalize to unseen populations, leading to errors in diagnosis. Human experts are crucial in validating and interpreting the results from AI systems.",
+              "limitation_highlighted": "The survey highlights the issues of bias and generalizability that can limit the reliability of deep learning models in automated diagnosis. Human oversight is necessary to mitigate these limitations.",
+              "relevance_score": 0.8,
+              "doi_or_url": "https://www.mdpi.com/1424-8220/20/20/5819"
+            },
+            {
+              "title": "The Limits of AI in Healthcare",
+              "authors": [
+                "Kate Crawford",
+                "Roel Dobbe",
+                "Trevor Paglen",
+                "Dennis Broeckmann",
+                "Simon Durham",
+                "Hope MacLean"
+              ],
+              "year": 2016,
+              "counter_finding": "This paper argues that the complexity of healthcare presents significant challenges for AI, particularly in areas requiring critical thinking, empathy, and understanding of individual patient contexts. Human judgment remains essential for ethical and responsible medical decision-making.",
+              "limitation_highlighted": "The paper emphasizes the ethical and practical limitations of replacing human judgment with AI, especially in complex and nuanced healthcare scenarios.",
+              "relevance_score": 0.75,
+              "doi_or_url": "https://www.newamerica.org/oti/reports/limits-ai-healthcare/"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_single_overstated_claim",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "AI has solved all problems in medical imaging and no further research is needed.",
+          "contradicting_literature": [
+            {
+              "title": "Artificial intelligence in medical imaging: opportunities, applications, and limitations",
+              "authors": [
+                "Hosny, Ahmed",
+                "Parmar, Chintan",
+                "Quackenbush, John",
+                "Schwartz, Lawrence H",
+                "Aerts, Hugo"
+              ],
+              "year": 2018,
+              "counter_finding": "While AI has shown promise, challenges remain in data acquisition, algorithm development, and clinical implementation.  It emphasizes the ongoing need for research to address these challenges.",
+              "limitation_highlighted": "Data limitations, model generalizability, and clinical workflow integration.",
+              "relevance_score": 0.95,
+              "doi_or_url": "10.1038/s41575-018-0069-0"
+            },
+            {
+              "title": "Deep learning for medical image analysis: a review",
+              "authors": [
+                "Shen, Dinggang",
+                "Wu, Guorong",
+                "Suk, Heung-Il"
+              ],
+              "year": 2017,
+              "counter_finding": "The review highlights the ongoing need to address issues such as limited labeled data, interpretability, and robustness to variations in imaging protocols.",
+              "limitation_highlighted": "Limited labeled data, lack of interpretability, sensitivity to imaging protocol variations, and the need for improved generalization.",
+              "relevance_score": 0.9,
+              "doi_or_url": "10.1109/TMI.2016.2636860"
+            },
+            {
+              "title": "The limitations of deep learning in medical imaging",
+              "authors": [
+                "Birkeland, Andrew W.",
+                "Gade-Rasmussen, Bj\u00f8rn"
+              ],
+              "year": 2020,
+              "counter_finding": "The paper explicitly discusses limitations, including reliance on large, high-quality datasets, susceptibility to adversarial attacks, and difficulty in handling rare diseases.  It argues that these limitations necessitate continued research.",
+              "limitation_highlighted": "Data dependency, adversarial vulnerability, rare disease limitations, lack of explainability.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://www.semanticscholar.org/paper/The-limitations-of-deep-learning-in-medical-imaging-Birkeland-Gade-Rasmussen/6448782849a1218a1315538d83f5264b98373911"
+            },
+            {
+              "title": "Beyond classification: challenges and limitations of using deep learning for medical image analysis",
+              "authors": [
+                "Esteva, Andre",
+                "Kuprel, Brandon",
+                "Novoa, Robert A",
+                "Ko, Jueun",
+                "Swani, S.M",
+                "Blau, Helen M",
+                "Threlfall, C.J.",
+                "Devesa, Joan V",
+                "Arnaout, Ramy"
+              ],
+              "year": 2017,
+              "counter_finding": "Demonstrates that Deep Learning models have significant limitations in generalizabilty, domain shift, and transfer learning, necessitating further research.",
+              "limitation_highlighted": "Model generalizability, domain shift problems when applying to new data, transfer learning challenges, lack of understanding of internal model workings.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://pubmed.ncbi.nlm.nih.gov/28062521/"
+            },
+            {
+              "title": "Explainable Artificial Intelligence for Medical Imaging",
+              "authors": [
+                "Tjoa, Ee-Lynn",
+                "Guruharsha, Ranjani"
+              ],
+              "year": 2021,
+              "counter_finding": "Highlights the critical need for eXplainable AI (XAI) in medical imaging, noting that current AI systems often lack transparency and therefore requires more research to solve trust concerns.",
+              "limitation_highlighted": "Lack of transparency in AI models, and subsequent distrust, leads to challenges in clinical adoption. XAI research to solve this problem remains essential.",
+              "relevance_score": 0.75,
+              "doi_or_url": "https://doi.org/10.3390/jcm10153376"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_reasonable_claims",
+    {
+      "success": false,
+      "sentence_analysis": [],
+      "error_details": "JSON parse error: Expecting value: line 9 column 157 (char 467)",
+      "debug_info": {
+        "model_used": "gemini-2.0-flash-exp",
+        "query_length": 1563,
+        "response_received": true,
+        "response_type": "GenerateContentResponse",
+        "response_length": 7121
+      },
+      "raw_response": "```json\n{\n    \"sentence_analysis\": [\n        {\n            \"sentence_number\": 1,\n            \"sentence_text\": \"Machine learning can assist doctors in diagnosis.\",\n            \"contradicting_literature\": [\n                {\n                    \"title\": \"Potential Pitfalls of Relying on Machine Learning in Healthcare\",\n                    \"authors\": [\"Finlayson\", \"S. G.\", \"Balsubramani\", \"R.\", \"Naik\", \"N.\", \"Haeusser\", \"J.\", \"Himelstein\", \"J. S.\", \"Zulueta\", \"J.\", \"Jung\", K.\", \"Shah\", N. H.\", \"Pradhan\", D.\", \"Safdar\", N.\", \"Obermeyer\", Z.\"],\n                    \"year\": 2019,\n                    \"counter_finding\": \"Over-reliance on machine learning models can lead to deskilling of clinicians, especially in cases where the model's predictions are incorrect or biased, negatively impacting patient outcomes. In some cases, ML models can amplify existing disparities in care, leading to poorer outcomes for underrepresented patient groups. The study warns against a 'black box' approach to medical ML and emphasized the need for careful interpretation and critical evaluation of outputs.\",\n                    \"limitation_highlighted\": \"Deskilling of clinicians, amplification of existing biases, lack of transparency in model decision-making (black box problem), and potential for incorrect diagnoses.\",\n                    \"relevance_score\": 0.9,\n                    \"doi_or_url\": \"https://jamanetwork.com/journals/jama/article-abstract/2730168\"\n                },\n                {\n                    \"title\": \"Artificial intelligence in healthcare: pitfalls and promises\",\n                    \"authors\": [\"Jiang\", \"F.\", \"Jiang\", \"Y.\", \"Xiao\", \"Y.\", \"Li\", \"S.\", \"Guo\", X.\", \"Li\", L.\", \"Dong\", Y.\", \"Li\", Q.\"],\n                    \"year\": 2017,\n                    \"counter_finding\": \"AI models, including machine learning, face challenges related to data quality, privacy concerns, and the difficulty in generalizing across different patient populations or healthcare settings.  They also discuss limitations regarding the \"black box\" nature of some algorithms and the ethical considerations of AI-driven medical decisions.\",\n                    \"limitation_highlighted\": \"Data bias, privacy issues, lack of generalizability, difficulty in interpreting complex model decisions, ethical concerns regarding AI-driven healthcare decisions.\",\n                    \"relevance_score\": 0.85,\n                    \"doi_or_url\": \"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6626316/\"\n                },\n                {\n                    \"title\": \"Adversarial Vulnerability of Medical Image Analysis Systems\",\n                    \"authors\": [\"Finlayson, S.G.\", \"Bowers, J.\", \"Ito, J.\", \"Zaremba, W.\", \"Beam, A.L.\"],\n                    \"year\": 2019,\n                    \"counter_finding\": \"Machine learning models used in medical diagnosis can be vulnerable to adversarial attacks.  These attacks involve subtle perturbations of input data (e.g., medical images) that are imperceptible to humans but can cause the model to make incorrect predictions, leading to misdiagnosis.\",\n                    \"limitation_highlighted\": \"Vulnerability to adversarial attacks, potentially leading to inaccurate diagnoses based on manipulated data.\",\n                    \"relevance_score\": 0.8,\n                    \"doi_or_url\": \"https://science.sciencemag.org/content/363/6433/1287\"\n                }\n            ]\n        },\n        {\n            \"sentence_number\": 2,\n            \"sentence_text\": \"AI shows promise in medical imaging analysis.\",\n            \"contradicting_literature\": [\n                {\n                    \"title\": \"Radiologist Performance vs. Artificial Intelligence for Diagnostic Accuracy in Breast Cancer Screening\",\n                    \"authors\": [\"Rodriguez-Ruiz\", \"A.\", \"Langa\", \"R.\", \"Claesen\", \"J.L.\", \"Gudj\u00f3nsd\u00f3ttir\", \"H.M.\", \"Kvist\", \"A.\", \"Birgitte Fallentin Damgaard Pedersen\", \"L.\", \"Mann\", R.M.\", \"Sejersen Jacobsen\", H.\", \"Svensson\", E.\", \"Zubizarreta\", A.\", \"Lundstr\u00f6m\", C.\"],\n                    \"year\": 2019,\n                    \"counter_finding\": \"While AI shows promise, this study demonstrated that AI systems, at the time of the study, sometimes still do not perform as well as experienced radiologists in breast cancer screening, particularly in certain challenging cases or for specific types of lesions. This indicates that AI is not yet a complete replacement for human expertise.\",\n                    \"limitation_highlighted\": \"AI's diagnostic accuracy might not consistently surpass that of experienced radiologists, especially in complex cases, highlighting the need for human oversight and validation.\",\n                    \"relevance_score\": 0.8,\n                    \"doi_or_url\": \"https://jnci.oxfordjournals.org/content/111/9/917\"\n                },\n                {\n                    \"title\": \"Deep learning in medical image analysis\",\n                    \"authors\": [\"Shen\", \"D.\", \"Wu\", G.\", \"Suk, H.I.\"],\n                    \"year\": 2017,\n                    \"counter_finding\": \"While deep learning has shown remarkable progress in medical image analysis, significant challenges remain. These challenges include the need for large, high-quality, labeled datasets for training, difficulties in handling variations in image quality and acquisition protocols across different institutions, and the potential for overfitting, which limits the generalizability of the models to new patient populations.\",\n                    \"limitation_highlighted\": \"Requirement for large labeled datasets, difficulties with image variability, overfitting issues, and lack of generalizability.\",\n                    \"relevance_score\": 0.75,\n                    \"doi_or_url\": \"https://www.annualreviews.org/doi/abs/10.1146/annurev-bioeng-071516-044442\"\n                },\n                {\n                    \"title\": \"Reliability and validity of artificial intelligence interpretation of chest radiographs: a systematic review\",\n                    \"authors\": [\"Gao\", \"Y.\", \"Wang\", H.\", \"Chen\", J.\", \"Yang\", J.\", \"Zhang\", Q.\", \"Zhang\", M.\", \"Luo\", Y.\", \"Liu\", D.\", \"Chen, Y.\"],\n                    \"year\": 2023,\n                    \"counter_finding\": \"The study reviewed the existing literature on the reliability and validity of AI in chest radiography and found variable results. They emphasize the need for caution in relying solely on AI interpretations without further validation.  The systematic review identified variability in performance across different diseases, image quality, and patient populations.  The level of reliability and validity varies widely and further rigorous study is necessary before widespread adoption of AI.\",\n                    \"limitation_highlighted\": \"Variability in AI performance, inconsistent reliability and validity across different datasets, diseases, and image qualities, necessitating cautious implementation and ongoing validation.\",\n                    \"relevance_score\": 0.7,\n                    \"doi_or_url\": \"https://bmcmedimaging.biomedcentral.com/articles/10.1186/s12880-023-01149-3\"\n                }\n            ]\n        }\n    ]\n}\n```",
+      "message": "Gemini response contains malformed JSON",
+      "json_text": "{\n    \"sentence_analysis\": [\n        {\n            \"sentence_number\": 1,\n            \"sentence_text\": \"Machine learning can assist doctors in diagnosis.\",\n            \"contradicting_literature\": [\n                {\n                    \"title\": \"Potential Pitfalls of Relying on Machine Learning in Healthcare\",\n                    \"authors\": [\"Finlayson\", \"S. G.\", \"Balsubramani\", \"R.\", \"Naik\", \"N.\", \"Haeusser\", \"J.\", \"Himelstein\", \"J. S.\", \"Zulueta\", \"J.\", \"Jung\", K.\", \"Shah\", N. H.\", \"Pradhan\", D"
+    }
+  ],
+  [
+    "test_different_model",
+    {
+      "sentence_analysis": [
+        {
+          "sentence_number": 1,
+          "sentence_text": "Artificial intelligence will replace all radiologists by next year.",
+          "contradicting_literature": [
+            {
+              "title": "Artificial Intelligence in Radiology: Opportunities, Challenges, and the Path Forward",
+              "authors": [
+                "Langlotz, Curtis P."
+              ],
+              "year": 2019,
+              "counter_finding": "AI is likely to augment radiologists rather than replace them entirely, especially in the near term.",
+              "limitation_highlighted": "AI tools are typically narrow in scope and cannot handle the full range of tasks performed by a radiologist.",
+              "relevance_score": 0.9,
+              "doi_or_url": "10.1148/radiol.2019190678"
+            },
+            {
+              "title": "The role of radiologists in the era of artificial intelligence",
+              "authors": [
+                "European Society of Radiology (ESR)"
+              ],
+              "year": 2018,
+              "counter_finding": "Radiologists will remain crucial for tasks requiring complex reasoning, communication with patients, and handling unpredictable situations.",
+              "limitation_highlighted": "AI models can struggle with cases outside their training data, and their decision-making process may lack transparency.",
+              "relevance_score": 0.85,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6056268/"
+            },
+            {
+              "title": "Augmenting, not replacing, radiologists: How artificial intelligence can improve radiology workflow",
+              "authors": [
+                "Yu, Kun-Hsing",
+                "Zhang, Ce"
+              ],
+              "year": 2018,
+              "counter_finding": "AI can improve radiologist efficiency and accuracy by automating routine tasks, but human oversight is still essential.",
+              "limitation_highlighted": "Ethical considerations, medicolegal implications, and the need for ongoing validation of AI tools necessitate radiologist involvement.",
+              "relevance_score": 0.8,
+              "doi_or_url": "https://pubmed.ncbi.nlm.nih.gov/29620706/"
+            },
+            {
+              "title": "Partnership, Not Replacement: Radiologists and Artificial Intelligence",
+              "authors": [
+                "Mesk\u00f3, Bertalan",
+                "Het\u00e9nyi, G\u00e9za"
+              ],
+              "year": 2019,
+              "counter_finding": "The integration of AI into radiology practice requires a collaborative approach, where AI tools are used to enhance radiologists' skills.",
+              "limitation_highlighted": "The successful deployment of AI in radiology depends on factors like data quality, regulatory frameworks, and professional acceptance.",
+              "relevance_score": 0.9,
+              "doi_or_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6515207/"
+            }
+          ]
+        }
+      ],
+      "success": true
+    }
+  ],
+  [
+    "test_empty_paragraph",
+    {
+      "success": false,
+      "sentence_analysis": [],
+      "error_details": "No JSON pattern found in response",
+      "debug_info": {
+        "model_used": "gemini-2.0-flash-exp",
+        "query_length": 1468,
+        "response_received": true,
+        "response_type": "GenerateContentResponse",
+        "response_length": 249
+      },
+      "raw_response": "Okay, I need the paragraph text to analyze.  Please provide the paragraph you want me to break down and find contradicting literature for.  Once you provide the text, I will run the analysis and return the JSON response in the format you specified.\n",
+      "message": "Gemini returned text but no JSON structure detected"
+    }
+  ]
+]
