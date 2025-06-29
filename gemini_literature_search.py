@@ -456,19 +456,19 @@ def find_relevant_literature(paragraph: str, model: str = "gemini-2.0-flash-exp"
 @app.tool()
 def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
     """
-    Find supporting literature for each sentence in a given paragraph.
+    Find multiple supporting literature sources for each sentence in a given paragraph.
     
     Args:
         paragraph: The paragraph text to analyze sentence by sentence
         model: Gemini model to use (default: "gemini-2.0-flash-exp")
     
     Returns:
-        On success: {"sentence_analysis": <list of sentences with supporting literature>}
+        On success: {"sentence_analysis": <list of sentences with 5-10 supporting literature sources each>}
         On error: {"error": <error message>}
     
     Examples:
         >>> find_supporting_literature("AI improves medical diagnosis. Machine learning reduces errors.")
-        {'sentence_analysis': [{'sentence': 'AI improves medical diagnosis', 'supporting_literature': [...]}]}
+        {'sentence_analysis': [{'sentence': 'AI improves medical diagnosis', 'supporting_literature': [5-10 papers]}]}
     """
     try:
         search_query = f"""
@@ -478,9 +478,13 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
 
         For each sentence:
         1. Break down the paragraph into individual sentences
-        2. For each sentence, search for academic papers that support the claim
-        3. Find peer-reviewed studies, research papers, or authoritative sources
-        4. Include paper abstracts and provide your own assessment of relevance and support
+        2. For each sentence, search for MULTIPLE academic papers that support the claim (aim for 5-10 papers per sentence)
+        3. Find diverse peer-reviewed studies, research papers, authoritative sources, and review articles
+        4. Include both foundational works and recent research
+        5. Include paper abstracts and provide your own assessment of relevance and support
+        6. Prioritize finding comprehensive literature coverage for each claim
+
+        IMPORTANT: Return as many relevant papers as possible for each sentence. A comprehensive literature review should include 5-10 or more papers per sentence when available. Include both seminal foundational works and recent cutting-edge research.
 
         Return your response as JSON with format:
         {{
@@ -587,19 +591,19 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
 @app.tool()
 def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
     """
-    Find literature that contradicts or challenges each sentence in a given paragraph.
+    Find multiple literature sources that contradict or challenge each sentence in a given paragraph.
     
     Args:
         paragraph: The paragraph text to analyze sentence by sentence
         model: Gemini model to use (default: "gemini-2.0-flash-exp")
     
     Returns:
-        On success: {"sentence_analysis": <list of sentences with contradicting literature>}
+        On success: {"sentence_analysis": <list of sentences with 5-10 contradicting literature sources each>}
         On error: {"error": <error message>}
     
     Examples:
         >>> find_unsupporting_literature("AI is 100% accurate in diagnosis. Automation eliminates all human error.")
-        {'sentence_analysis': [{'sentence': 'AI is 100% accurate...', 'contradicting_literature': [...]}]}
+        {'sentence_analysis': [{'sentence': 'AI is 100% accurate...', 'contradicting_literature': [5-10 papers]}]}
     """
     try:
         search_query = f"""
@@ -609,10 +613,14 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
 
         For each sentence:
         1. Break down the paragraph into individual sentences
-        2. For each sentence, search for academic papers that contradict or challenge the claim
-        3. Look for studies showing limitations, failures, or alternative findings
-        4. Include research that presents counter-evidence or different conclusions
-        5. Include paper abstracts and provide your own assessment of how they contradict the claims
+        2. For each sentence, search for MULTIPLE academic papers that contradict or challenge the claim (aim for 5-10 papers per sentence)
+        3. Look for diverse studies showing limitations, failures, or alternative findings
+        4. Include research that presents counter-evidence, different conclusions, or methodological critiques
+        5. Find both direct contradictions and papers highlighting limitations or exceptions
+        6. Include paper abstracts and provide your own assessment of how they contradict the claims
+        7. Prioritize finding comprehensive critical literature coverage for each claim
+
+        IMPORTANT: Return as many relevant critical papers as possible for each sentence. A thorough critical analysis should include 5-10 or more papers per sentence when available. Include both direct contradictions and papers that highlight limitations, exceptions, or methodological concerns.
 
         Return your response as JSON with format:
         {{
