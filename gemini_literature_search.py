@@ -17,7 +17,7 @@ except ImportError as e:
     sys.exit(1)
 
 try:
-    from fastmcp import FastMCP
+    from mcp.server.fastmcp import FastMCP
 except ImportError as e:
     print(f"Error importing FastMCP: {e}", file=sys.stderr)
     print("Make sure to install: pip install fastmcp", file=sys.stderr)
