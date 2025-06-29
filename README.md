@@ -14,6 +14,10 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
   - Validate literature relevance to research topics
   - Check citation appropriateness for specific sentences
   - Generate comprehensive literature summaries
+- **Fact-Checking Tools**:
+  - Find supporting literature for each sentence in a paragraph
+  - Find contradicting literature for critical analysis
+  - Comprehensive fact-checking with balanced evidence
 - **Research Support**:
   - Semantic search using Google Gemini AI
   - Contextual analysis of research papers
@@ -182,6 +186,19 @@ Ask Gemini without web search: "Explain the concept of machine learning overfitt
 
 ```
 Ask Gemini with specific model: "Analyze recent AI trends" using model "gemini-1.5-pro"
+```
+
+#### Fact-Checking Tools
+```
+Find supporting literature: "AI improves medical diagnosis accuracy. Machine learning algorithms can detect cancer with 95% precision."
+```
+
+```
+Find contradicting literature: "AI is 100% accurate in medical diagnosis. Automation completely eliminates human error in healthcare."
+```
+
+```
+Comprehensive fact-check: "Artificial intelligence reduces diagnostic errors by 50%. AI systems are now more accurate than human doctors in all medical specialties."
 ```
 
 ### Available Models

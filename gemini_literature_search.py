@@ -426,6 +426,247 @@ def find_related_papers(paper_title: str, authors: str, max_results: int = 5) ->
         return {"error": str(e)}
 
 @app.tool()
+def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
+    """
+    Find supporting literature for each sentence in a given paragraph.
+    
+    Args:
+        paragraph: The paragraph text to analyze sentence by sentence
+        model: Gemini model to use (default: "gemini-2.0-flash-exp")
+    
+    Returns:
+        On success: {"sentence_analysis": <list of sentences with supporting literature>}
+        On error: {"error": <error message>}
+    
+    Examples:
+        >>> find_supporting_literature("AI improves medical diagnosis. Machine learning reduces errors.")
+        {'sentence_analysis': [{'sentence': 'AI improves medical diagnosis', 'supporting_literature': [...]}]}
+    """
+    try:
+        search_query = f"""
+        For the following paragraph, analyze each sentence and find academic literature that SUPPORTS each claim:
+
+        Paragraph: "{paragraph}"
+
+        For each sentence:
+        1. Break down the paragraph into individual sentences
+        2. For each sentence, search for academic papers that support the claim
+        3. Find peer-reviewed studies, research papers, or authoritative sources
+        4. Include specific findings or data that validate each statement
+
+        Return your response as JSON with format:
+        {{
+            "sentence_analysis": [
+                {{
+                    "sentence_number": 1,
+                    "sentence_text": "<sentence>",
+                    "supporting_literature": [
+                        {{
+                            "title": "<paper title>",
+                            "authors": ["<author1>", "<author2>"],
+                            "year": <year>,
+                            "key_finding": "<specific finding that supports the sentence>",
+                            "relevance_score": <0.0-1.0>,
+                            "doi_or_url": "<DOI or URL if available>"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+        """
+        
+        response = search_with_grounding(search_query, model)
+        
+        # Try to extract JSON from response
+        try:
+            # Look for JSON in the response
+            import re
+            json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+            if json_match:
+                result_data = json.loads(json_match.group())
+                return result_data
+            else:
+                # If no JSON found, return structured response
+                return {
+                    "sentence_analysis": [],
+                    "raw_response": response.text,
+                    "note": "Could not parse JSON response, see raw_response"
+                }
+        except json.JSONDecodeError:
+            return {
+                "sentence_analysis": [],
+                "raw_response": response.text,
+                "note": "Could not parse JSON response, see raw_response"
+            }
+            
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.tool()
+def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
+    """
+    Find literature that contradicts or challenges each sentence in a given paragraph.
+    
+    Args:
+        paragraph: The paragraph text to analyze sentence by sentence
+        model: Gemini model to use (default: "gemini-2.0-flash-exp")
+    
+    Returns:
+        On success: {"sentence_analysis": <list of sentences with contradicting literature>}
+        On error: {"error": <error message>}
+    
+    Examples:
+        >>> find_unsupporting_literature("AI is 100% accurate in diagnosis. Automation eliminates all human error.")
+        {'sentence_analysis': [{'sentence': 'AI is 100% accurate...', 'contradicting_literature': [...]}]}
+    """
+    try:
+        search_query = f"""
+        For the following paragraph, analyze each sentence and find academic literature that CONTRADICTS, CHALLENGES, or shows LIMITATIONS of each claim:
+
+        Paragraph: "{paragraph}"
+
+        For each sentence:
+        1. Break down the paragraph into individual sentences
+        2. For each sentence, search for academic papers that contradict or challenge the claim
+        3. Look for studies showing limitations, failures, or alternative findings
+        4. Include research that presents counter-evidence or different conclusions
+        5. Find papers highlighting potential problems or exceptions
+
+        Return your response as JSON with format:
+        {{
+            "sentence_analysis": [
+                {{
+                    "sentence_number": 1,
+                    "sentence_text": "<sentence>",
+                    "contradicting_literature": [
+                        {{
+                            "title": "<paper title>",
+                            "authors": ["<author1>", "<author2>"],
+                            "year": <year>,
+                            "counter_finding": "<specific finding that contradicts the sentence>",
+                            "limitation_highlighted": "<what limitation or problem is shown>",
+                            "relevance_score": <0.0-1.0>,
+                            "doi_or_url": "<DOI or URL if available>"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+        """
+        
+        response = search_with_grounding(search_query, model)
+        
+        # Try to extract JSON from response
+        try:
+            import re
+            json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+            if json_match:
+                result_data = json.loads(json_match.group())
+                return result_data
+            else:
+                return {
+                    "sentence_analysis": [],
+                    "raw_response": response.text,
+                    "note": "Could not parse JSON response, see raw_response"
+                }
+        except json.JSONDecodeError:
+            return {
+                "sentence_analysis": [],
+                "raw_response": response.text,
+                "note": "Could not parse JSON response, see raw_response"
+            }
+            
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.tool()
+def comprehensive_fact_check(paragraph: str, model: str = "gemini-2.0-flash-exp") -> dict:
+    """
+    Perform comprehensive fact-checking by finding both supporting and contradicting literature for each sentence.
+    
+    Args:
+        paragraph: The paragraph text to fact-check sentence by sentence
+        model: Gemini model to use (default: "gemini-2.0-flash-exp")
+    
+    Returns:
+        On success: {"fact_check_analysis": <comprehensive analysis with both sides>}
+        On error: {"error": <error message>}
+    
+    Examples:
+        >>> comprehensive_fact_check("AI improves diagnosis accuracy by 50%. It completely replaces human doctors.")
+        {'fact_check_analysis': [{'sentence': '...', 'supporting': [...], 'contradicting': [...], 'verdict': '...'}]}
+    """
+    try:
+        search_query = f"""
+        Perform a comprehensive fact-check of the following paragraph by analyzing each sentence for both supporting and contradicting evidence:
+
+        Paragraph: "{paragraph}"
+
+        For each sentence:
+        1. Break down the paragraph into individual sentences
+        2. Search for academic literature that SUPPORTS the claim
+        3. Search for academic literature that CONTRADICTS or CHALLENGES the claim
+        4. Provide a balanced assessment with evidence from both sides
+        5. Give a fact-check verdict (Supported/Partially Supported/Contradicted/Insufficient Evidence)
+
+        Return your response as JSON with format:
+        {{
+            "fact_check_analysis": [
+                {{
+                    "sentence_number": 1,
+                    "sentence_text": "<sentence>",
+                    "supporting_evidence": [
+                        {{
+                            "title": "<paper title>",
+                            "authors": ["<author1>", "<author2>"],
+                            "year": <year>,
+                            "supporting_finding": "<finding that supports>",
+                            "doi_or_url": "<DOI or URL if available>"
+                        }}
+                    ],
+                    "contradicting_evidence": [
+                        {{
+                            "title": "<paper title>",
+                            "authors": ["<author1>", "<author2>"],
+                            "year": <year>,
+                            "contradicting_finding": "<finding that contradicts>",
+                            "doi_or_url": "<DOI or URL if available>"
+                        }}
+                    ],
+                    "verdict": "<Supported/Partially Supported/Contradicted/Insufficient Evidence>",
+                    "confidence": <0.0-1.0>,
+                    "analysis": "<balanced assessment of the evidence>"
+                }}
+            ]
+        }}
+        """
+        
+        response = search_with_grounding(search_query, model)
+        
+        # Try to extract JSON from response
+        try:
+            import re
+            json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+            if json_match:
+                result_data = json.loads(json_match.group())
+                return result_data
+            else:
+                return {
+                    "fact_check_analysis": [],
+                    "raw_response": response.text,
+                    "note": "Could not parse JSON response, see raw_response"
+                }
+        except json.JSONDecodeError:
+            return {
+                "fact_check_analysis": [],
+                "raw_response": response.text,
+                "note": "Could not parse JSON response, see raw_response"
+            }
+            
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.tool()
 def ask_gemini(query: str, use_search: bool = True, model: str = "gemini-2.0-flash-exp") -> dict:
     """
     Delegate any task directly to Gemini with optional Google Search grounding.
