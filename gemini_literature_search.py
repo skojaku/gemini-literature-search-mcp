@@ -11,6 +11,8 @@ except ImportError as e:
 
 try:
     import google.generativeai as genai
+    from google import genai as genai_client
+    from google.genai import types
 except ImportError as e:
     print(f"Error importing google.generativeai: {e}", file=sys.stderr)
     print("Make sure to install: pip install google-generativeai", file=sys.stderr)
@@ -28,11 +30,19 @@ load_dotenv()
 
 # Configure Gemini API
 api_key = os.getenv('GEMINI_API_KEY')
+client = None
+
 if not api_key:
     print("Warning: GEMINI_API_KEY not found in environment variables.", file=sys.stderr)
     print("Please set your Gemini API key in a .env file or environment variable.", file=sys.stderr)
 else:
     genai.configure(api_key=api_key)
+    # Also configure the new genai client for grounding
+    try:
+        client = genai_client.Client(api_key=api_key)
+    except Exception as e:
+        print(f"Warning: Could not initialize grounding client: {e}", file=sys.stderr)
+        client = None
 
 # Create MCP Server
 app = FastMCP(
@@ -47,6 +57,30 @@ TRANSPORT = "sse"
 def get_gemini_model():
     """Get Gemini model instance"""
     return genai.GenerativeModel('gemini-1.5-flash')
+
+def search_with_grounding(query):
+    """Search using Gemini with Google Search grounding"""
+    if not client:
+        raise Exception("Grounding client not available. Check API key configuration.")
+    
+    # Define the grounding tool
+    grounding_tool = types.Tool(
+        google_search=types.GoogleSearch()
+    )
+    
+    # Configure generation settings
+    config = types.GenerateContentConfig(
+        tools=[grounding_tool]
+    )
+    
+    # Make the request
+    response = client.models.generate_content(
+        model="gemini-2.0-flash-exp",
+        contents=query,
+        config=config,
+    )
+    
+    return response
 
 @app.tool()
 def search_literature(query: str, max_results: int = 10) -> dict:
@@ -66,50 +100,50 @@ def search_literature(query: str, max_results: int = 10) -> dict:
         {'results': [{'title': '...', 'authors': [...], 'year': 2024, 'summary': '...'}]}
     """
     try:
-        model = get_gemini_model()
+        # Use Google Search grounding for real-time academic search
+        search_query = f"""
+        Find recent academic papers and research on: {query}
         
-        prompt = f"""
-        Please search the internet for recent academic literature on the topic: "{query}"
+        Please search for peer-reviewed papers, conference proceedings, and academic publications.
+        Focus on finding {max_results} most relevant and recent papers.
+        Include information about:
+        - Paper titles and authors
+        - Publication years and venues
+        - Key findings and contributions
+        - DOIs or URLs when available
         
-        Find {max_results} current and relevant academic papers by searching online academic sources.
-        Look for papers from Google Scholar, arXiv, PubMed, or other academic databases.
-        
-        For each paper you find, provide:
-        1. Title
-        2. Authors
-        3. Publication year
-        4. Brief summary/abstract
-        5. Key findings or contributions
-        6. Journal/venue
-        7. DOI or URL if available
-        
-        Return your response as a JSON array with format:
-        [
-          {{
-            "title": "<paper title>",
-            "authors": ["<author1>", "<author2>"],
-            "year": <year>,
-            "summary": "<brief summary>",
-            "key_findings": "<key contributions>",
-            "venue": "<journal/conference name>",
-            "doi_or_url": "<DOI or URL if available>"
-          }}
-        ]
+        Organize the results clearly with proper citations and sources.
         """
         
-        response = model.generate_content(prompt)
+        response = search_with_grounding(search_query)
         
-        try:
-            # Try to parse as JSON
-            results_data = json.loads(response.text.strip())
-            return {"results": results_data}
-        except json.JSONDecodeError:
-            # If JSON parsing fails, return the raw response
-            return {
-                "results": [],
-                "raw_response": response.text,
-                "note": "Could not parse JSON response, see raw_response for details"
-            }
+        # Extract information from grounded response
+        result = {
+            "search_query_used": search_query,
+            "grounded_response": response.text,
+            "sources": []
+        }
+        
+        # Add grounding metadata if available
+        if hasattr(response, 'candidates') and response.candidates:
+            candidate = response.candidates[0]
+            if hasattr(candidate, 'grounding_metadata') and candidate.grounding_metadata:
+                grounding = candidate.grounding_metadata
+                
+                # Add search queries used
+                if hasattr(grounding, 'web_search_queries'):
+                    result["web_search_queries"] = grounding.web_search_queries
+                
+                # Add source chunks
+                if hasattr(grounding, 'grounding_chunks'):
+                    for chunk in grounding.grounding_chunks:
+                        if hasattr(chunk, 'web'):
+                            result["sources"].append({
+                                "title": chunk.web.title if hasattr(chunk.web, 'title') else "Unknown",
+                                "url": chunk.web.uri if hasattr(chunk.web, 'uri') else "Unknown"
+                            })
+        
+        return result
             
     except Exception as e:
         return {"error": str(e)}
