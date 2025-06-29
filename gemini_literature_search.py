@@ -54,7 +54,7 @@ app = FastMCP(
 
 TRANSPORT = "sse"
 
-def get_gemini_model(model_name="gemini-1.5-flash"):
+def get_gemini_model(model_name="gemini-2.0-flash-exp"):
     """Get Gemini model instance"""
     return genai.GenerativeModel(model_name)
 
