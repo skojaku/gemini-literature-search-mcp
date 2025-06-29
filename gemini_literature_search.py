@@ -557,32 +557,79 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
         result["raw_response"] = response_text
         result["debug_info"]["response_length"] = len(response_text)
         
-        # Try to extract JSON from response with improved parsing
+        # Try to extract JSON from response with robust parsing
         try:
             import re
-            # Clean up common JSON issues in the response first
-            cleaned_response = response_text
-            # Handle LaTeX citations and other escape sequences
-            cleaned_response = re.sub(r'\\cite\{[^}]*\}', '[citation]', cleaned_response)
-            cleaned_response = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '[formatting]', cleaned_response)
-            # Fix common escape issues
-            cleaned_response = cleaned_response.replace('\\n', ' ').replace('\\t', ' ')
             
-            json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
-            if json_match:
+            # Extract JSON from markdown code blocks or direct JSON
+            json_text = ""
+            patterns = [
+                r'```json\s*(\{.*?\})\s*```',  # JSON in markdown code blocks
+                r'(\{[^{}]*"sentence_analysis"[^{}]*\[[^\]]*\][^{}]*\})',  # Specific pattern
+                r'(\{.*\})'  # Any JSON-like structure
+            ]
+            
+            for pattern in patterns:
+                match = re.search(pattern, response_text, re.DOTALL)
+                if match:
+                    json_text = match.group(1) if '(' in pattern else match.group(0)
+                    break
+            
+            if json_text:
+                # Progressive cleanup and parsing attempts
+                attempts = [
+                    # Attempt 1: Clean and parse as-is
+                    lambda text: text,
+                    # Attempt 2: Remove problematic characters
+                    lambda text: re.sub(r'[^\x00-\x7F]+', ' ', text),
+                    # Attempt 3: Fix common issues
+                    lambda text: re.sub(r'\\cite\{[^}]*\}', '[citation]', 
+                                      re.sub(r'[^\x00-\x7F]+', ' ', text)),
+                    # Attempt 4: Truncate at last complete object
+                    lambda text: text[:text.rfind('}') + 1] if '}' in text else text
+                ]
+                
+                for attempt_func in attempts:
+                    try:
+                        cleaned_json = attempt_func(json_text)
+                        # Basic cleanup
+                        cleaned_json = cleaned_json.replace('\\n', ' ').replace('\\t', ' ')
+                        
+                        result_data = json.loads(cleaned_json)
+                        if isinstance(result_data, dict) and "sentence_analysis" in result_data:
+                            result_data["success"] = True
+                            return result_data
+                    except (json.JSONDecodeError, UnicodeDecodeError, AttributeError):
+                        continue
+                
+                # If all attempts fail, try to extract partial data
                 try:
-                    result_data = json.loads(json_match.group())
-                    if isinstance(result_data, dict) and "sentence_analysis" in result_data:
-                        result_data["success"] = True
-                        return result_data
-                    else:
-                        result["error_details"] = "JSON found but missing required structure"
-                        result["message"] = "Gemini returned JSON but it doesn't contain sentence_analysis field"
-                        result["parsed_json"] = result_data
-                except json.JSONDecodeError as je:
-                    result["error_details"] = f"JSON parse error: {str(je)}"
-                    result["message"] = "Gemini response contains malformed JSON"
-                    result["json_text"] = json_match.group()[:500]  # First 500 chars
+                    # Look for individual sentence objects
+                    sentence_pattern = r'\{[^{}]*"sentence_number"[^{}]*"sentence_text"[^{}]*"supporting_literature"[^{}]*\[[^\]]*\][^{}]*\}'
+                    sentences = re.findall(sentence_pattern, json_text, re.DOTALL)
+                    if sentences:
+                        # Create partial result with whatever we could parse
+                        partial_result = {
+                            "success": True,
+                            "sentence_analysis": [],
+                            "note": f"Partial parsing: extracted {len(sentences)} sentences from malformed JSON"
+                        }
+                        
+                        for sentence_json in sentences:
+                            try:
+                                sentence_obj = json.loads(sentence_json)
+                                partial_result["sentence_analysis"].append(sentence_obj)
+                            except:
+                                continue
+                        
+                        if partial_result["sentence_analysis"]:
+                            return partial_result
+                except:
+                    pass
+                
+                result["error_details"] = "JSON parse error after all cleanup attempts"
+                result["message"] = "Gemini response contains malformed JSON that couldn't be repaired"
+                result["json_text"] = json_text[:500]
             else:
                 result["error_details"] = "No JSON pattern found in response"
                 result["message"] = "Gemini returned text but no JSON structure detected"
@@ -713,32 +760,79 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
         result["raw_response"] = response_text
         result["debug_info"]["response_length"] = len(response_text)
         
-        # Try to extract JSON from response with improved parsing
+        # Try to extract JSON from response with robust parsing
         try:
             import re
-            # Clean up common JSON issues in the response first
-            cleaned_response = response_text
-            # Handle LaTeX citations and other escape sequences
-            cleaned_response = re.sub(r'\\cite\{[^}]*\}', '[citation]', cleaned_response)
-            cleaned_response = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '[formatting]', cleaned_response)
-            # Fix common escape issues
-            cleaned_response = cleaned_response.replace('\\n', ' ').replace('\\t', ' ')
             
-            json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
-            if json_match:
+            # Extract JSON from markdown code blocks or direct JSON
+            json_text = ""
+            patterns = [
+                r'```json\s*(\{.*?\})\s*```',  # JSON in markdown code blocks
+                r'(\{[^{}]*"sentence_analysis"[^{}]*\[[^\]]*\][^{}]*\})',  # Specific pattern
+                r'(\{.*\})'  # Any JSON-like structure
+            ]
+            
+            for pattern in patterns:
+                match = re.search(pattern, response_text, re.DOTALL)
+                if match:
+                    json_text = match.group(1) if '(' in pattern else match.group(0)
+                    break
+            
+            if json_text:
+                # Progressive cleanup and parsing attempts
+                attempts = [
+                    # Attempt 1: Clean and parse as-is
+                    lambda text: text,
+                    # Attempt 2: Remove problematic characters
+                    lambda text: re.sub(r'[^\x00-\x7F]+', ' ', text),
+                    # Attempt 3: Fix common issues
+                    lambda text: re.sub(r'\\cite\{[^}]*\}', '[citation]', 
+                                      re.sub(r'[^\x00-\x7F]+', ' ', text)),
+                    # Attempt 4: Truncate at last complete object
+                    lambda text: text[:text.rfind('}') + 1] if '}' in text else text
+                ]
+                
+                for attempt_func in attempts:
+                    try:
+                        cleaned_json = attempt_func(json_text)
+                        # Basic cleanup
+                        cleaned_json = cleaned_json.replace('\\n', ' ').replace('\\t', ' ')
+                        
+                        result_data = json.loads(cleaned_json)
+                        if isinstance(result_data, dict) and "sentence_analysis" in result_data:
+                            result_data["success"] = True
+                            return result_data
+                    except (json.JSONDecodeError, UnicodeDecodeError, AttributeError):
+                        continue
+                
+                # If all attempts fail, try to extract partial data
                 try:
-                    result_data = json.loads(json_match.group())
-                    if isinstance(result_data, dict) and "sentence_analysis" in result_data:
-                        result_data["success"] = True
-                        return result_data
-                    else:
-                        result["error_details"] = "JSON found but missing required structure"
-                        result["message"] = "Gemini returned JSON but it doesn't contain sentence_analysis field"
-                        result["parsed_json"] = result_data
-                except json.JSONDecodeError as je:
-                    result["error_details"] = f"JSON parse error: {str(je)}"
-                    result["message"] = "Gemini response contains malformed JSON"
-                    result["json_text"] = json_match.group()[:500]  # First 500 chars
+                    # Look for individual sentence objects
+                    sentence_pattern = r'\{[^{}]*"sentence_number"[^{}]*"sentence_text"[^{}]*"supporting_literature"[^{}]*\[[^\]]*\][^{}]*\}'
+                    sentences = re.findall(sentence_pattern, json_text, re.DOTALL)
+                    if sentences:
+                        # Create partial result with whatever we could parse
+                        partial_result = {
+                            "success": True,
+                            "sentence_analysis": [],
+                            "note": f"Partial parsing: extracted {len(sentences)} sentences from malformed JSON"
+                        }
+                        
+                        for sentence_json in sentences:
+                            try:
+                                sentence_obj = json.loads(sentence_json)
+                                partial_result["sentence_analysis"].append(sentence_obj)
+                            except:
+                                continue
+                        
+                        if partial_result["sentence_analysis"]:
+                            return partial_result
+                except:
+                    pass
+                
+                result["error_details"] = "JSON parse error after all cleanup attempts"
+                result["message"] = "Gemini response contains malformed JSON that couldn't be repaired"
+                result["json_text"] = json_text[:500]
             else:
                 result["error_details"] = "No JSON pattern found in response"
                 result["message"] = "Gemini returned text but no JSON structure detected"
