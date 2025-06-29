@@ -6,10 +6,10 @@ This is a Model Context Protocol (MCP) server that provides AI-powered academic 
 
 The Gemini Literature Search MCP Server provides AI-powered tools for academic research:
 
-- **Literature Management**:
-  - Add new literature entries with metadata (title, authors, abstract, keywords, DOI)
-  - Search literature database with semantic matching
-  - List and retrieve literature details
+- **Literature Analysis**:
+  - Sentence-level literature discovery and analysis
+  - Topic-based literature identification
+  - Comprehensive literature coverage for research areas
 - **AI-Powered Validation**:
   - Validate literature relevance to research topics
   - Check citation appropriateness for specific sentences
@@ -156,10 +156,6 @@ Abstract: "This paper explores the application of deep learning techniques in me
 Keywords: ["deep learning", "medical diagnosis", "healthcare", "AI"]
 ```
 
-#### Searching Literature
-```
-Search for papers related to "machine learning in healthcare applications"
-```
 
 #### Validating Literature Relevance
 ```
@@ -208,7 +204,7 @@ Comprehensive fact-check: "Artificial intelligence reduces diagnostic errors by 
 
 ### Available Models
 
-The server supports various Gemini models. You can specify the model parameter in `search_literature` and `ask_gemini` tools:
+The server supports various Gemini models. You can specify the model parameter in literature analysis and `ask_gemini` tools:
 
 - **`gemini-2.0-flash-exp`** (default) - Latest experimental model with grounding
 - **`gemini-1.5-pro`** - High-capability model for complex tasks
@@ -217,7 +213,7 @@ The server supports various Gemini models. You can specify the model parameter i
 
 Example usage:
 ```
-search_literature("AI in medicine", model="gemini-1.5-pro")
+find_relevant_literature("AI in medicine", model="gemini-1.5-pro")
 ask_gemini("Explain quantum physics", model="gemini-1.5-flash", use_search=False)
 ```
 
