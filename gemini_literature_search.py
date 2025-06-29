@@ -472,7 +472,7 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
     """
     try:
         # Check and truncate paragraph if too long to avoid token limits
-        max_paragraph_length = 5000  # Conservative limit to stay under token limits
+        max_paragraph_length = 15000  # Relaxed limit - allow larger inputs
         original_length = len(paragraph)
         if len(paragraph) > max_paragraph_length:
             paragraph = paragraph[:max_paragraph_length] + "... [truncated due to length]"
@@ -557,10 +557,18 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
         result["raw_response"] = response_text
         result["debug_info"]["response_length"] = len(response_text)
         
-        # Try to extract JSON from response
+        # Try to extract JSON from response with improved parsing
         try:
             import re
-            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+            # Clean up common JSON issues in the response first
+            cleaned_response = response_text
+            # Handle LaTeX citations and other escape sequences
+            cleaned_response = re.sub(r'\\cite\{[^}]*\}', '[citation]', cleaned_response)
+            cleaned_response = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '[formatting]', cleaned_response)
+            # Fix common escape issues
+            cleaned_response = cleaned_response.replace('\\n', ' ').replace('\\t', ' ')
+            
+            json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
             if json_match:
                 try:
                     result_data = json.loads(json_match.group())
@@ -595,7 +603,7 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
             "debug_info": {
                 "model_used": model,
                 "exception_type": type(e).__name__,
-                "input_truncated": len(paragraph) > 5000 if 'paragraph' in locals() else False,
+                "input_truncated": len(paragraph) > 15000 if 'paragraph' in locals() else False,
                 "original_input_length": len(paragraph) if 'paragraph' in locals() else 0
             }
         }
@@ -619,7 +627,7 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
     """
     try:
         # Check and truncate paragraph if too long to avoid token limits
-        max_paragraph_length = 5000  # Conservative limit to stay under token limits
+        max_paragraph_length = 15000  # Relaxed limit - allow larger inputs
         original_length = len(paragraph)
         if len(paragraph) > max_paragraph_length:
             paragraph = paragraph[:max_paragraph_length] + "... [truncated due to length]"
@@ -705,10 +713,18 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
         result["raw_response"] = response_text
         result["debug_info"]["response_length"] = len(response_text)
         
-        # Try to extract JSON from response
+        # Try to extract JSON from response with improved parsing
         try:
             import re
-            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+            # Clean up common JSON issues in the response first
+            cleaned_response = response_text
+            # Handle LaTeX citations and other escape sequences
+            cleaned_response = re.sub(r'\\cite\{[^}]*\}', '[citation]', cleaned_response)
+            cleaned_response = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '[formatting]', cleaned_response)
+            # Fix common escape issues
+            cleaned_response = cleaned_response.replace('\\n', ' ').replace('\\t', ' ')
+            
+            json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
             if json_match:
                 try:
                     result_data = json.loads(json_match.group())
@@ -743,7 +759,7 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
             "debug_info": {
                 "model_used": model,
                 "exception_type": type(e).__name__,
-                "input_truncated": len(paragraph) > 5000 if 'paragraph' in locals() else False,
+                "input_truncated": len(paragraph) > 15000 if 'paragraph' in locals() else False,
                 "original_input_length": len(paragraph) if 'paragraph' in locals() else 0
             }
         }
