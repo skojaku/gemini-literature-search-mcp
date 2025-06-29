@@ -24,9 +24,9 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
 ### Prerequisites
 
 - Python 3.10+ (recommended: Python 3.11+)
-- [uv](https://github.com/astral-sh/uv) (recommended) or pip
+- [uv](https://github.com/astral-sh/uv) - Fast Python package installer and resolver
 - Claude Desktop app (to use the MCP server with Claude)
-- Google Gemini API key (for literature search server)
+- Google Gemini API key
 
 ### Installation Steps
 
@@ -36,17 +36,13 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
    cd gemini-literature-search-mcp
    ```
 
-2. (Option 1) Setup with the provided script:
+2. Install dependencies with uv:
    ```bash
-   chmod +x setup_venv.sh
-   ./setup_venv.sh
-   ```
-
-   (Option 2) Or manually set up the virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
+   # Install uv if you haven't already
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   
+   # Sync dependencies
+   uv sync
    ```
 
 ### Gemini Literature Search Server Setup
@@ -63,27 +59,28 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
 
 3. Run the Gemini literature search server:
    ```bash
+   # Using the run script
    chmod +x run_gemini_server.sh
    ./run_gemini_server.sh
+   
+   # Or directly with uv
+   uv run gemini-literature-search
    ```
 
 ## Integration with Claude Desktop
 
 To use this MCP server with Claude Desktop:
 
-1. Make sure you have uv installed ([Installation Guide](https://github.com/astral-sh/uv))
-
-2. Install the MCP server in Claude Desktop:
+1. Install the MCP server in Claude Desktop using FastMCP:
    ```bash
-   fastmcp install gemini_literature_search.py
-   ```
-
-   Or with a custom name:
-   ```bash
+   # Install from the project directory
    fastmcp install gemini_literature_search.py --name "Literature Search"
+   
+   # Or install directly with uv
+   uv run fastmcp install gemini_literature_search.py --name "Literature Search"
    ```
 
-3. Once installed, Claude will automatically have access to all the literature search tools and functions.
+2. Once installed, Claude will automatically have access to all the literature search tools and functions.
 
 
 ## Integration with Claude Code
@@ -134,6 +131,10 @@ Generate a comprehensive summary of literature entries #1, #2, and #3 focused on
 
 For development and debugging, you can use the FastMCP development mode:
 ```bash
+# Using uv
+uv run fastmcp dev gemini_literature_search.py
+
+# Or traditional method
 fastmcp dev gemini_literature_search.py
 ```
 
@@ -141,7 +142,26 @@ This will start a local web interface where you can test all tools interactively
 
 ### Running Tests
 
-You can test individual functions by running the server and using Claude Desktop or the development interface.
+```bash
+# Run tests with uv
+uv run pytest
+
+# Or run with specific options
+uv run pytest -v --tb=short
+```
+
+### Code Quality
+
+```bash
+# Format code with black
+uv run black .
+
+# Lint with ruff
+uv run ruff check .
+
+# Type checking with mypy
+uv run mypy gemini_literature_search.py
+```
 
 ## License
 

@@ -419,10 +419,14 @@ def get_literature_details(literature_id: int) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
-if __name__ == "__main__":
+def main():
+    """Main entry point for the application."""
     # Check if API key is set
     if not os.getenv('GEMINI_API_KEY'):
         print("Warning: GEMINI_API_KEY not found in environment variables.")
         print("Please set your Gemini API key in a .env file or environment variable.")
     
     app.run(transport=TRANSPORT)
+
+if __name__ == "__main__":
+    main()

@@ -247,3 +247,7 @@ logs/
 # Literature database backups
 literature_backup.json
 literature_export.json
+
+# uv
+.uv/
+uv.lock
