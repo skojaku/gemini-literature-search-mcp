@@ -471,6 +471,13 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
         {'sentence_analysis': [{'sentence': 'AI improves medical diagnosis', 'supporting_literature': [5-10 papers]}]}
     """
     try:
+        # Check and truncate paragraph if too long to avoid token limits
+        max_paragraph_length = 5000  # Conservative limit to stay under token limits
+        original_length = len(paragraph)
+        if len(paragraph) > max_paragraph_length:
+            paragraph = paragraph[:max_paragraph_length] + "... [truncated due to length]"
+            print(f"Warning: Input truncated from {original_length} to {len(paragraph)} characters to avoid token limits", file=sys.stderr)
+        
         search_query = f"""
         For the following paragraph, analyze each sentence and find academic literature that SUPPORTS each claim:
 
@@ -519,7 +526,10 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
                 "model_used": model,
                 "query_length": len(search_query),
                 "response_received": bool(response),
-                "response_type": type(response).__name__ if response else "None"
+                "response_type": type(response).__name__ if response else "None",
+                "input_truncated": original_length > max_paragraph_length,
+                "original_input_length": original_length,
+                "processed_input_length": len(paragraph)
             }
         }
         
@@ -584,7 +594,9 @@ def find_supporting_literature(paragraph: str, model: str = "gemini-2.0-flash-ex
             "sentence_analysis": [],
             "debug_info": {
                 "model_used": model,
-                "exception_type": type(e).__name__
+                "exception_type": type(e).__name__,
+                "input_truncated": len(paragraph) > 5000 if 'paragraph' in locals() else False,
+                "original_input_length": len(paragraph) if 'paragraph' in locals() else 0
             }
         }
 
@@ -606,6 +618,13 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
         {'sentence_analysis': [{'sentence': 'AI is 100% accurate...', 'contradicting_literature': [5-10 papers]}]}
     """
     try:
+        # Check and truncate paragraph if too long to avoid token limits
+        max_paragraph_length = 5000  # Conservative limit to stay under token limits
+        original_length = len(paragraph)
+        if len(paragraph) > max_paragraph_length:
+            paragraph = paragraph[:max_paragraph_length] + "... [truncated due to length]"
+            print(f"Warning: Input truncated from {original_length} to {len(paragraph)} characters to avoid token limits", file=sys.stderr)
+        
         search_query = f"""
         For the following paragraph, analyze each sentence and find academic literature that CONTRADICTS, CHALLENGES, or shows LIMITATIONS of each claim:
 
@@ -655,7 +674,10 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
                 "model_used": model,
                 "query_length": len(search_query),
                 "response_received": bool(response),
-                "response_type": type(response).__name__ if response else "None"
+                "response_type": type(response).__name__ if response else "None",
+                "input_truncated": original_length > max_paragraph_length,
+                "original_input_length": original_length,
+                "processed_input_length": len(paragraph)
             }
         }
         
@@ -720,7 +742,9 @@ def find_unsupporting_literature(paragraph: str, model: str = "gemini-2.0-flash-
             "sentence_analysis": [],
             "debug_info": {
                 "model_used": model,
-                "exception_type": type(e).__name__
+                "exception_type": type(e).__name__,
+                "input_truncated": len(paragraph) > 5000 if 'paragraph' in locals() else False,
+                "original_input_length": len(paragraph) if 'paragraph' in locals() else 0
             }
         }
 
