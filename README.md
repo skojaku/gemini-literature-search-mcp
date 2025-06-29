@@ -69,34 +69,57 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
 
 ## Integration with Claude Desktop
 
-To use this MCP server with Claude Desktop:
+To use this MCP server with Claude Desktop, you need to manually configure it in your Claude Desktop configuration file.
 
-### Option 1: Using the fallback runner (Recommended)
+### Manual Configuration Steps
 
-1. Install the MCP server in Claude Desktop using the fallback runner:
+1. **Install uv** if you haven't already ([Installation Guide](https://github.com/astral-sh/uv))
+
+2. **Find your uv path**:
    ```bash
-   # Install from the project directory
-   fastmcp install run_with_fallback.py --name "Literature Search"
+   which uv
+   # Example output: /Users/yourusername/.local/bin/uv
    ```
 
-   This runner automatically detects if `uv` is available and falls back to regular Python if needed.
+3. **Locate your Claude Desktop config file**:
+   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-### Option 2: Direct installation
-
-1. If you have dependencies installed globally or prefer direct execution:
-   ```bash
-   fastmcp install gemini_literature_search.py --name "Literature Search"
+4. **Edit the config file** to add the Literature Search server:
+   ```json
+   {
+     "mcpServers": {
+       "Literature Search": {
+         "command": "/Users/yourusername/.local/bin/uv",
+         "args": [
+           "run",
+           "--with",
+           "fastmcp",
+           "--with",
+           "google-generativeai",
+           "--with",
+           "requests",
+           "--with",
+           "python-dotenv",
+           "fastmcp",
+           "run",
+           "/path/to/your/gemini-literature-search-mcp/gemini_literature_search.py"
+         ]
+       }
+     }
+   }
    ```
 
-2. Once installed, Claude will automatically have access to all the literature search tools and functions.
+5. **Important replacements**:
+   - Replace `/Users/yourusername/.local/bin/uv` with your actual uv path from step 2
+   - Replace `/path/to/your/gemini-literature-search-mcp/gemini_literature_search.py` with the full path to your cloned repository
 
-### Troubleshooting
+6. **Restart Claude Desktop** for the changes to take effect
 
-If you see "spawn uv ENOENT" errors, it means Claude Desktop can't find `uv`. Use the fallback runner (Option 1) or install dependencies globally:
-
-```bash
-pip install fastmcp google-generativeai requests pydantic python-dotenv
-```
+### Key Points
+- **Use absolute paths**: Both for the `uv` command and the Python script
+- **Include all dependencies**: Use `--with` flags for each required package
+- **Check paths**: Ensure all file paths exist and are accessible
 
 
 ## Integration with Claude Code
