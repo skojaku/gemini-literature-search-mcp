@@ -71,13 +71,32 @@ The Gemini Literature Search MCP Server provides AI-powered tools for academic r
 
 To use this MCP server with Claude Desktop:
 
-1. Install the MCP server in Claude Desktop using FastMCP:
+### Option 1: Using the fallback runner (Recommended)
+
+1. Install the MCP server in Claude Desktop using the fallback runner:
    ```bash
    # Install from the project directory
+   fastmcp install run_with_fallback.py --name "Literature Search"
+   ```
+
+   This runner automatically detects if `uv` is available and falls back to regular Python if needed.
+
+### Option 2: Direct installation
+
+1. If you have dependencies installed globally or prefer direct execution:
+   ```bash
    fastmcp install gemini_literature_search.py --name "Literature Search"
    ```
 
 2. Once installed, Claude will automatically have access to all the literature search tools and functions.
+
+### Troubleshooting
+
+If you see "spawn uv ENOENT" errors, it means Claude Desktop can't find `uv`. Use the fallback runner (Option 1) or install dependencies globally:
+
+```bash
+pip install fastmcp google-generativeai requests pydantic python-dotenv
+```
 
 
 ## Integration with Claude Code
