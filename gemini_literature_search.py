@@ -44,153 +44,85 @@ app = FastMCP(
 
 TRANSPORT = "sse"
 
-# In-memory literature database (in production, this would be a proper database)
-literature_database = []
-
-class LiteratureEntry:
-    def __init__(self, title: str, authors: List[str], year: int, abstract: str, 
-                 keywords: List[str], doi: Optional[str] = None, url: Optional[str] = None):
-        self.title = title
-        self.authors = authors
-        self.year = year
-        self.abstract = abstract
-        self.keywords = keywords
-        self.doi = doi
-        self.url = url
-        self.id = len(literature_database) + 1
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "title": self.title,
-            "authors": self.authors,
-            "year": self.year,
-            "abstract": self.abstract,
-            "keywords": self.keywords,
-            "doi": self.doi,
-            "url": self.url
-        }
-
 def get_gemini_model():
     """Get Gemini model instance"""
     return genai.GenerativeModel('gemini-1.5-flash')
 
 @app.tool()
-def add_literature(
-    title: str,
-    authors: List[str],
-    year: int,
-    abstract: str,
-    keywords: List[str],
-    doi: Optional[str] = None,
-    url: Optional[str] = None
-) -> dict:
-    """
-    Add a new literature entry to the database.
-    
-    Args:
-        title: The title of the paper
-        authors: List of author names
-        year: Publication year
-        abstract: Paper abstract
-        keywords: List of keywords
-        doi: DOI if available
-        url: URL if available
-    
-    Returns:
-        On success: {"result": "Literature added successfully", "id": <entry_id>}
-        On error: {"error": <error message>}
-    
-    Examples:
-        >>> add_literature("Deep Learning Applications", ["Smith, J.", "Doe, A."], 2023, "This paper explores...", ["deep learning", "AI"])
-        {'result': 'Literature added successfully', 'id': 1}
-    """
-    try:
-        entry = LiteratureEntry(title, authors, year, abstract, keywords, doi, url)
-        literature_database.append(entry)
-        
-        return {
-            "result": "Literature added successfully",
-            "id": entry.id,
-            "entry": entry.to_dict()
-        }
-    except Exception as e:
-        return {"error": str(e)}
-
-@app.tool()
 def search_literature(query: str, max_results: int = 10) -> dict:
     """
-    Search through the literature database using Gemini AI for semantic matching.
+    Search for academic literature using Gemini AI.
     
     Args:
-        query: Search query describing the topic or keywords
-        max_results: Maximum number of results to return
+        query: Search query describing the research topic or keywords
+        max_results: Maximum number of results to return (default: 10)
     
     Returns:
-        On success: {"results": <list of matching literature entries>}
+        On success: {"results": <list of literature entries with details>}
         On error: {"error": <error message>}
     
     Examples:
         >>> search_literature("machine learning applications in healthcare")
-        {'results': [{'id': 1, 'title': '...', 'relevance_score': 0.95}]}
+        {'results': [{'title': '...', 'authors': [...], 'year': 2023, 'summary': '...'}]}
     """
     try:
-        if not literature_database:
-            return {"results": [], "message": "No literature entries in database"}
-        
         model = get_gemini_model()
         
-        # Create a prompt for semantic search
-        literature_summaries = []
-        for entry in literature_database:
-            summary = f"ID: {entry.id}, Title: {entry.title}, Abstract: {entry.abstract[:200]}..., Keywords: {', '.join(entry.keywords)}"
-            literature_summaries.append(summary)
-        
         prompt = f"""
-        Given the search query: "{query}"
+        Please search for and provide information about recent academic literature on the topic: "{query}"
         
-        Please analyze the following literature entries and rank them by relevance to the query.
-        Return the top {max_results} most relevant entries with their IDs and a relevance score (0-1).
+        For each paper you find, provide:
+        1. Title
+        2. Authors
+        3. Publication year
+        4. Brief summary/abstract
+        5. Key findings or contributions
+        6. DOI or URL if available
+        7. Relevance score (0-1) to the query
         
-        Literature entries:
-        {chr(10).join(literature_summaries)}
+        Please provide up to {max_results} most relevant and recent papers.
+        Focus on peer-reviewed academic papers, conference proceedings, and reputable journals.
         
         Return your response as a JSON array with format:
-        [{"id": <entry_id>, "relevance_score": <score>, "reason": "<brief explanation>"}]
+        [
+          {{
+            "title": "<paper title>",
+            "authors": ["<author1>", "<author2>"],
+            "year": <year>,
+            "summary": "<brief summary>",
+            "key_findings": "<key contributions>",
+            "doi_or_url": "<DOI or URL if available>",
+            "relevance_score": <0.0-1.0>,
+            "source": "<journal/conference name>"
+          }}
+        ]
         """
         
         response = model.generate_content(prompt)
         
-        # Parse Gemini response
         try:
+            # Try to parse as JSON
             results_data = json.loads(response.text.strip())
+            return {"results": results_data}
         except json.JSONDecodeError:
-            # If JSON parsing fails, extract IDs manually
-            results_data = []
-        
-        # Get full entry details for results
-        results = []
-        for result in results_data:
-            entry_id = result.get("id")
-            if entry_id and entry_id <= len(literature_database):
-                entry = literature_database[entry_id - 1]
-                entry_dict = entry.to_dict()
-                entry_dict["relevance_score"] = result.get("relevance_score", 0)
-                entry_dict["relevance_reason"] = result.get("reason", "")
-                results.append(entry_dict)
-        
-        return {"results": results}
-        
+            # If JSON parsing fails, return the raw response
+            return {
+                "results": [],
+                "raw_response": response.text,
+                "note": "Could not parse JSON response, see raw_response for details"
+            }
+            
     except Exception as e:
         return {"error": str(e)}
 
 @app.tool()
-def validate_literature_relevance(literature_id: int, research_topic: str) -> dict:
+def validate_paper_relevance(paper_title: str, authors: str, research_topic: str) -> dict:
     """
-    Validate the relevance of a specific literature entry to a research topic using Gemini AI.
+    Validate the relevance of a specific paper to a research topic using Gemini AI.
     
     Args:
-        literature_id: ID of the literature entry to validate
+        paper_title: Title of the paper to validate
+        authors: Authors of the paper
         research_topic: Description of the research topic or question
     
     Returns:
@@ -198,39 +130,40 @@ def validate_literature_relevance(literature_id: int, research_topic: str) -> di
         On error: {"error": <error message>}
     
     Examples:
-        >>> validate_literature_relevance(1, "application of neural networks in medical diagnosis")
+        >>> validate_paper_relevance("Deep Learning in Medical Diagnosis", "Smith et al.", "neural networks in healthcare")
         {'relevance_score': 0.85, 'analysis': 'This paper is highly relevant because...'}
     """
     try:
-        if literature_id < 1 or literature_id > len(literature_database):
-            return {"error": "Literature entry not found"}
-        
-        entry = literature_database[literature_id - 1]
         model = get_gemini_model()
         
         prompt = f"""
         Research Topic: "{research_topic}"
         
-        Literature Entry:
-        Title: {entry.title}
-        Authors: {', '.join(entry.authors)}
-        Year: {entry.year}
-        Abstract: {entry.abstract}
-        Keywords: {', '.join(entry.keywords)}
+        Paper to Evaluate:
+        Title: {paper_title}
+        Authors: {authors}
         
-        Please analyze the relevance of this literature entry to the research topic.
+        Please analyze the relevance of this paper to the research topic.
+        Consider:
+        1. How well the paper's content aligns with the research topic
+        2. The methodological relevance
+        3. The potential contribution to understanding the topic
+        4. The quality and impact of the work
+        
         Provide:
         1. A relevance score from 0.0 (not relevant) to 1.0 (highly relevant)
-        2. A detailed analysis explaining why this literature is or isn't relevant
+        2. A detailed analysis explaining the relevance assessment
         3. Specific aspects that make it relevant or irrelevant
+        4. Suggestions for how this paper could be used in research on the topic
         
         Return your response as JSON with format:
-        {
+        {{
             "relevance_score": <score>,
             "analysis": "<detailed explanation>",
             "relevant_aspects": ["<aspect1>", "<aspect2>"],
-            "concerns": ["<concern1>", "<concern2>"]
-        }
+            "limitations": ["<limitation1>", "<limitation2>"],
+            "research_applications": ["<application1>", "<application2>"]
+        }}
         """
         
         response = model.generate_content(prompt)
@@ -243,20 +176,21 @@ def validate_literature_relevance(literature_id: int, research_topic: str) -> di
                 "relevance_score": 0.5,
                 "analysis": response.text,
                 "relevant_aspects": [],
-                "concerns": []
+                "limitations": [],
+                "research_applications": []
             }
             
     except Exception as e:
         return {"error": str(e)}
 
 @app.tool()
-def validate_citation_relevance(sentence: str, literature_id: int, context: Optional[str] = None) -> dict:
+def validate_citation_appropriateness(sentence: str, paper_reference: str, context: Optional[str] = None) -> dict:
     """
-    Validate whether a specific sentence appropriately cites a literature entry using Gemini AI.
+    Validate whether a sentence appropriately cites a paper using Gemini AI.
     
     Args:
         sentence: The sentence containing the citation to validate
-        literature_id: ID of the literature entry being cited
+        paper_reference: Reference to the paper being cited (title, authors, year)
         context: Optional surrounding context for better validation
     
     Returns:
@@ -264,14 +198,10 @@ def validate_citation_relevance(sentence: str, literature_id: int, context: Opti
         On error: {"error": <error message>}
     
     Examples:
-        >>> validate_citation_relevance("Neural networks have shown promising results in medical diagnosis (Smith et al., 2023).", 1)
+        >>> validate_citation_appropriateness("Neural networks show 95% accuracy in diagnosis.", "Smith et al. 2023 - Deep Learning in Medical Diagnosis")
         {'is_appropriate': True, 'analysis': 'The citation is appropriate because...'}
     """
     try:
-        if literature_id < 1 or literature_id > len(literature_database):
-            return {"error": "Literature entry not found"}
-        
-        entry = literature_database[literature_id - 1]
         model = get_gemini_model()
         
         context_info = f"\n\nContext: {context}" if context else ""
@@ -279,27 +209,27 @@ def validate_citation_relevance(sentence: str, literature_id: int, context: Opti
         prompt = f"""
         Sentence with Citation: "{sentence}"{context_info}
         
-        Literature Entry Being Cited:
-        Title: {entry.title}
-        Authors: {', '.join(entry.authors)}
-        Year: {entry.year}
-        Abstract: {entry.abstract}
-        Keywords: {', '.join(entry.keywords)}
+        Paper Being Cited: {paper_reference}
         
         Please analyze whether this citation is appropriate and accurate:
-        1. Does the sentence accurately represent the content/findings of the cited literature?
-        2. Is the citation contextually appropriate?
-        3. Are there any misrepresentations or overstatements?
-        4. Does the cited work actually support the claim being made?
+        1. Does the sentence accurately represent what the cited paper likely contains?
+        2. Is the citation contextually appropriate for the claim being made?
+        3. Are there any potential misrepresentations or overstatements?
+        4. Does the claim seem reasonable for this type of paper?
+        
+        Consider:
+        - The specificity and nature of the claim
+        - Whether the cited work would likely support this claim
+        - The appropriateness of the citation style and context
         
         Return your response as JSON with format:
-        {
+        {{
             "is_appropriate": <true/false>,
             "confidence": <0.0-1.0>,
             "analysis": "<detailed explanation>",
             "issues": ["<issue1>", "<issue2>"],
             "suggestions": ["<suggestion1>", "<suggestion2>"]
-        }
+        }}
         """
         
         response = model.generate_content(prompt)
@@ -320,69 +250,55 @@ def validate_citation_relevance(sentence: str, literature_id: int, context: Opti
         return {"error": str(e)}
 
 @app.tool()
-def generate_literature_summary(literature_ids: List[int], topic: str) -> dict:
+def generate_research_summary(topic: str, focus_areas: Optional[List[str]] = None) -> dict:
     """
-    Generate a comprehensive summary of multiple literature entries for a specific topic using Gemini AI.
+    Generate a comprehensive research summary on a topic using Gemini's knowledge.
     
     Args:
-        literature_ids: List of literature entry IDs to summarize
-        topic: The research topic to focus the summary on
+        topic: The research topic to summarize
+        focus_areas: Optional list of specific areas to focus on
     
     Returns:
         On success: {"summary": <comprehensive summary>, "key_findings": <list>}
         On error: {"error": <error message>}
     
     Examples:
-        >>> generate_literature_summary([1, 2, 3], "machine learning in healthcare")
-        {'summary': 'Based on the reviewed literature...', 'key_findings': ['Finding 1', 'Finding 2']}
+        >>> generate_research_summary("machine learning in healthcare", ["diagnosis", "treatment"])
+        {'summary': 'Current research in ML healthcare...', 'key_findings': ['Finding 1', 'Finding 2']}
     """
     try:
-        if not literature_ids:
-            return {"error": "No literature IDs provided"}
-        
-        entries = []
-        for lit_id in literature_ids:
-            if lit_id < 1 or lit_id > len(literature_database):
-                continue
-            entries.append(literature_database[lit_id - 1])
-        
-        if not entries:
-            return {"error": "No valid literature entries found"}
-        
         model = get_gemini_model()
         
-        literature_text = ""
-        for entry in entries:
-            literature_text += f"""
-            Title: {entry.title}
-            Authors: {', '.join(entry.authors)} ({entry.year})
-            Abstract: {entry.abstract}
-            Keywords: {', '.join(entry.keywords)}
-            ---
-            """
+        focus_info = ""
+        if focus_areas:
+            focus_info = f"\n\nPlease focus particularly on these areas: {', '.join(focus_areas)}"
         
         prompt = f"""
-        Topic: "{topic}"
+        Topic: "{topic}"{focus_info}
         
-        Literature Entries to Summarize:
-        {literature_text}
-        
-        Please provide a comprehensive literature summary focused on the topic "{topic}".
+        Please provide a comprehensive research summary on this topic based on current academic knowledge.
         Include:
-        1. An overview of the current state of research
-        2. Key findings and contributions from each paper
-        3. Common themes and patterns
-        4. Gaps in the literature
+        
+        1. Overview of the current state of research
+        2. Key findings and breakthroughs in recent years
+        3. Major research methodologies being used
+        4. Current challenges and limitations
         5. Future research directions
+        6. Notable researchers and institutions in this field
+        7. Important journals and conferences for this topic
+        
+        Focus on peer-reviewed academic research and provide specific examples where possible.
         
         Return your response as JSON with format:
-        {
-            "summary": "<comprehensive summary>",
-            "key_findings": ["<finding1>", "<finding2>"],
-            "common_themes": ["<theme1>", "<theme2>"],
-            "research_gaps": ["<gap1>", "<gap2>"],
-            "future_directions": ["<direction1>", "<direction2>"]
-        }
+        {{
+            "summary": "<comprehensive overview>",
+            "key_findings": ["<finding1>", "<finding2>", "<finding3>"],
+            "methodologies": ["<method1>", "<method2>"],
+            "challenges": ["<challenge1>", "<challenge2>"],
+            "future_directions": ["<direction1>", "<direction2>"],
+            "notable_researchers": ["<researcher1>", "<researcher2>"],
+            "important_venues": ["<journal/conference1>", "<journal/conference2>"]
+        }}
         """
         
         response = model.generate_content(prompt)
@@ -394,51 +310,82 @@ def generate_literature_summary(literature_ids: List[int], topic: str) -> dict:
             return {
                 "summary": response.text,
                 "key_findings": [],
-                "common_themes": [],
-                "research_gaps": [],
-                "future_directions": []
+                "methodologies": [],
+                "challenges": [],
+                "future_directions": [],
+                "notable_researchers": [],
+                "important_venues": []
             }
             
     except Exception as e:
         return {"error": str(e)}
 
 @app.tool()
-def list_literature() -> dict:
+def find_related_papers(paper_title: str, authors: str, max_results: int = 5) -> dict:
     """
-    List all literature entries in the database.
-    
-    Returns:
-        On success: {"entries": <list of all literature entries>}
-        On error: {"error": <error message>}
-    """
-    try:
-        entries = [entry.to_dict() for entry in literature_database]
-        return {
-            "entries": entries,
-            "total_count": len(entries)
-        }
-    except Exception as e:
-        return {"error": str(e)}
-
-@app.tool()
-def get_literature_details(literature_id: int) -> dict:
-    """
-    Get detailed information about a specific literature entry.
+    Find papers related to a given paper using Gemini AI.
     
     Args:
-        literature_id: ID of the literature entry
+        paper_title: Title of the reference paper
+        authors: Authors of the reference paper
+        max_results: Maximum number of related papers to return
     
     Returns:
-        On success: {"entry": <literature entry details>}
+        On success: {"related_papers": <list of related papers>}
         On error: {"error": <error message>}
+    
+    Examples:
+        >>> find_related_papers("Deep Learning in Medical Diagnosis", "Smith et al.", 5)
+        {'related_papers': [{'title': '...', 'authors': [...], 'relationship': '...'}]}
     """
     try:
-        if literature_id < 1 or literature_id > len(literature_database):
-            return {"error": "Literature entry not found"}
+        model = get_gemini_model()
         
-        entry = literature_database[literature_id - 1]
-        return {"entry": entry.to_dict()}
+        prompt = f"""
+        Reference Paper:
+        Title: {paper_title}
+        Authors: {authors}
         
+        Please find up to {max_results} academic papers that are closely related to this reference paper.
+        Look for papers that:
+        1. Use similar methodologies
+        2. Address related research questions
+        3. Build upon or cite this work
+        4. Apply similar approaches to different domains
+        5. Provide comparative or competing approaches
+        
+        For each related paper, provide:
+        1. Title
+        2. Authors
+        3. Publication year
+        4. Brief description of how it relates to the reference paper
+        5. Type of relationship (methodology, application, extension, comparison, etc.)
+        
+        Return your response as JSON with format:
+        [
+          {{
+            "title": "<paper title>",
+            "authors": ["<author1>", "<author2>"],
+            "year": <year>,
+            "relationship_description": "<how it relates>",
+            "relationship_type": "<methodology/application/extension/comparison/citation>",
+            "relevance_score": <0.0-1.0>
+          }}
+        ]
+        """
+        
+        response = model.generate_content(prompt)
+        
+        try:
+            results_data = json.loads(response.text.strip())
+            return {"related_papers": results_data}
+        except json.JSONDecodeError:
+            return {
+                "related_papers": [],
+                "raw_response": response.text,
+                "note": "Could not parse JSON response, see raw_response for details"
+            }
+            
     except Exception as e:
         return {"error": str(e)}
 
