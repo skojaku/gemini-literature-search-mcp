@@ -1,15 +1,38 @@
 import os
+import sys
 import json
 from typing import List, Dict, Optional
-from dotenv import load_dotenv
-import google.generativeai as genai
-from mcp.server.fastmcp import FastMCP
+
+try:
+    from dotenv import load_dotenv
+except ImportError as e:
+    print(f"Error importing dotenv: {e}", file=sys.stderr)
+    sys.exit(1)
+
+try:
+    import google.generativeai as genai
+except ImportError as e:
+    print(f"Error importing google.generativeai: {e}", file=sys.stderr)
+    print("Make sure to install: pip install google-generativeai", file=sys.stderr)
+    sys.exit(1)
+
+try:
+    from fastmcp import FastMCP
+except ImportError as e:
+    print(f"Error importing FastMCP: {e}", file=sys.stderr)
+    print("Make sure to install: pip install fastmcp", file=sys.stderr)
+    sys.exit(1)
 
 # Load environment variables
 load_dotenv()
 
 # Configure Gemini API
-genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
+api_key = os.getenv('GEMINI_API_KEY')
+if not api_key:
+    print("Warning: GEMINI_API_KEY not found in environment variables.", file=sys.stderr)
+    print("Please set your Gemini API key in a .env file or environment variable.", file=sys.stderr)
+else:
+    genai.configure(api_key=api_key)
 
 # Create MCP Server
 app = FastMCP(
@@ -419,14 +442,5 @@ def get_literature_details(literature_id: int) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
-def main():
-    """Main entry point for the application."""
-    # Check if API key is set
-    if not os.getenv('GEMINI_API_KEY'):
-        print("Warning: GEMINI_API_KEY not found in environment variables.")
-        print("Please set your Gemini API key in a .env file or environment variable.")
-    
-    app.run(transport=TRANSPORT)
-
 if __name__ == "__main__":
-    main()
+    app.run(transport=TRANSPORT)
