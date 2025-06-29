@@ -1,8 +1,13 @@
-# Mathematical Calculator MCP Server
+# FastMCP Servers Collection
 
-This is a Model Context Protocol (MCP) server that provides Claude with advanced mathematical calculation capabilities, including symbolic math, statistical analysis, and matrix operations.
+This repository contains multiple Model Context Protocol (MCP) servers built with FastMCP:
+
+1. **Mathematical Calculator MCP Server** - Advanced mathematical calculations, symbolic math, and statistical analysis
+2. **Gemini Literature Search MCP Server** - AI-powered academic literature search and validation using Google Gemini
 
 ## Features
+
+### Mathematical Calculator MCP Server
 
 The Mathematical Calculator MCP Server provides the following tools:
 
@@ -22,6 +27,23 @@ The Mathematical Calculator MCP Server provides the following tools:
   - Matrix multiplication
   - Matrix transposition
 
+### Gemini Literature Search MCP Server
+
+The Gemini Literature Search MCP Server provides AI-powered tools for academic research:
+
+- **Literature Management**:
+  - Add new literature entries with metadata (title, authors, abstract, keywords, DOI)
+  - Search literature database with semantic matching
+  - List and retrieve literature details
+- **AI-Powered Validation**:
+  - Validate literature relevance to research topics
+  - Check citation appropriateness for specific sentences
+  - Generate comprehensive literature summaries
+- **Research Support**:
+  - Semantic search using Google Gemini AI
+  - Contextual analysis of research papers
+  - Citation validation and recommendations
+
 ## Installation
 
 ### Prerequisites
@@ -29,6 +51,7 @@ The Mathematical Calculator MCP Server provides the following tools:
 - Python 3.10+ (recommended: Python 3.11+)
 - [uv](https://github.com/astral-sh/uv) (recommended) or pip
 - Claude Desktop app (to use the MCP server with Claude)
+- Google Gemini API key (for literature search server)
 
 ### Installation Steps
 
@@ -54,6 +77,24 @@ The Mathematical Calculator MCP Server provides the following tools:
 3. Run doc-tests to verify everything works:
    ```bash
    bash run_doctests.sh
+   ```
+
+### Gemini Literature Search Server Setup
+
+1. Get a Google Gemini API key:
+   - Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a new API key
+
+2. Configure your API key:
+   ```bash
+   cp .env.template .env
+   # Edit .env and add your API key: GEMINI_API_KEY=your_api_key_here
+   ```
+
+3. Run the Gemini literature search server:
+   ```bash
+   chmod +x run_gemini_server.sh
+   ./run_gemini_server.sh
    ```
 
 ## Integration with Claude Desktop
@@ -84,6 +125,8 @@ To use this MCP server with Claude Desktop:
 3. Select "FastMCP"
 
 ## Usage Examples
+
+### Mathematical Calculator Examples
 
 After integrating with Claude Desktop, you can ask Claude to perform various mathematical operations. Here are some examples:
 
@@ -128,6 +171,40 @@ and
 [7, 8]
 [9, 10]
 [11, 12]
+```
+
+### Gemini Literature Search Examples
+
+Here are examples of how to use the literature search functionality:
+
+#### Adding Literature
+```
+Add this paper to the literature database:
+Title: "Deep Learning Applications in Medical Diagnosis"
+Authors: ["Smith, J.", "Johnson, A.", "Brown, K."]
+Year: 2023
+Abstract: "This paper explores the application of deep learning techniques in medical diagnosis, showing significant improvements in accuracy and efficiency."
+Keywords: ["deep learning", "medical diagnosis", "healthcare", "AI"]
+```
+
+#### Searching Literature
+```
+Search for papers related to "machine learning in healthcare applications"
+```
+
+#### Validating Literature Relevance
+```
+Check if literature entry #1 is relevant to my research on "neural networks for medical image analysis"
+```
+
+#### Validating Citations
+```
+Is this citation appropriate: "Deep learning has revolutionized medical diagnosis with accuracy rates exceeding 95% (Smith et al., 2023)." - citing literature entry #1
+```
+
+#### Generating Literature Summary
+```
+Generate a comprehensive summary of literature entries #1, #2, and #3 focused on "AI applications in healthcare"
 ```
 
 ## Development
