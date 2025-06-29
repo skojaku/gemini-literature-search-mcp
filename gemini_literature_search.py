@@ -49,7 +49,7 @@ app = FastMCP(
     title="Gemini Literature Search",
     description="A server for academic literature search and validation using Google Gemini",
     version="1.0.0",
-    dependencies=["google-generativeai", "requests", "python-dotenv"],
+    dependencies=["google-generativeai", "google-genai", "requests", "python-dotenv"],
 )
 
 TRANSPORT = "sse"
